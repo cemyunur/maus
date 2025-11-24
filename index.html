@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Maus Art Space</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+
+    <style>
+        :root { --win-teal: #008080; --win-gray: #c0c0c0; --win-blue: #000080; --win-white: #ffffff; --win-black: #000000; --border-inset: inset -2px -2px #ffffff, inset 2px 2px #808080, inset -1px -1px #c0c0c0, inset 1px 1px #000000; --border-outset: inset -2px -2px #808080, inset 2px 2px #ffffff, inset -1px -1px #c0c0c0, inset 1px 1px #c0c0c0; }
+        * { box-sizing: border-box; }
+        body { margin: 0; height: 100vh; overflow: hidden; background-color: var(--win-teal); font-family: 'VT323', monospace; user-select: none; transition: background-color 0.5s; touch-action: none; padding-top: env(safe-area-inset-top); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+        
+        /* UI Elementleri */
+        #surprise-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
+        #show-timer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 15rem; color: yellow; font-weight: bold; text-shadow: 5px 5px 0px red, -5px -5px 0px blue; z-index: 50; pointer-events: none; animation: shake 0.5s infinite; }
+        @keyframes shake { 0% { transform: translate(-51%, -51%); } 50% { transform: translate(-49%, -49%); } 100% { transform: translate(-51%, -51%); } }
+        .bg-layer { position: absolute; top:0; left:0; width:100%; height:100%; object-fit: cover; opacity: 0.6; z-index: 1; }
+        .disco-ball { position: absolute; top: -250px; left: 50%; transform: translateX(-50%); width: 200px; z-index: 10; transition: top 2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .disco-ball.drop { top: 5%; }
+        .dance-floor { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); display: flex; align-items: flex-end; justify-content: center; width: 100%; max-width: 1000px; height: 100%; z-index: 20; pointer-events: none; }
+        .dancer { position: relative; object-fit: contain; }
+        .d1 { width: 250px; z-index: 3; bottom: 10px; } .d2 { width: 300px; z-index: 5; bottom: -20px; } .d3 { width: 200px; z-index: 2; bottom: 40px; left: -20px; opacity: 0.9; } .d4 { width: 210px; z-index: 2; bottom: 35px; right: -20px; opacity: 0.9; }
+        .close-show-btn { display: none; position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); padding: 15px 40px; font-size: 2rem; font-family: 'VT323', monospace; background: red; color: white; border: 4px solid yellow; cursor: pointer; z-index: 60; box-shadow: 0 0 30px rgba(255,0,0,1); text-transform: uppercase; font-weight: bold; }
+        .close-show-btn:active { transform: translateX(-50%) scale(0.95); }
+        #crt-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; pointer-events: none; }
+        .crt-anim { animation: turn-off 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        @keyframes turn-off { 0% { transform: scale(1, 1.3); opacity: 1; } 100% { transform: scale(0, 0.001); opacity: 0; } }
+        
+        /* Desktop & Windows */
+        #desktop { padding: 20px; display: flex; flex-direction: column; gap: 15px; align-items: flex-start; flex-wrap: wrap; height: 85vh; margin-top: 10px; }
+        .desktop-icon { display: flex; flex-direction: column; align-items: center; width: 90px; cursor: pointer; text-align: center; color: var(--win-white); z-index: 1; margin-bottom: 5px; }
+        .desktop-icon img { width: 48px; height: 48px; margin-bottom: 5px; image-rendering: pixelated; filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.5)); }
+        .desktop-icon span { background-color: var(--win-teal); padding: 2px 5px; font-size: 1.1rem; line-height: 1.1; }
+        .desktop-icon:active img { opacity: 0.7; filter: grayscale(100%); }
+        #taskbar { position: fixed; bottom: 0; left: 0; width: 100%; height: auto; min-height: 40px; background-color: var(--win-gray); box-shadow: var(--border-outset); display: flex; justify-content: space-between; align-items: center; padding: 4px 4px calc(4px + env(safe-area-inset-bottom)) 4px; z-index: 9999; }
+        .start-btn { display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 10px; background-color: var(--win-gray); box-shadow: var(--border-outset); font-weight: bold; font-size: 1.2rem; cursor: pointer; }
+        .start-btn.active { box-shadow: var(--border-inset); background: #ddd; }
+        #clock { background-color: var(--win-gray); box-shadow: var(--border-inset); padding: 5px 15px; font-size: 1.1rem; margin-right: 5px; }
+        #start-menu { display: none; position: fixed; left: 2px; width: 260px; background-color: var(--win-gray); box-shadow: var(--border-outset); z-index: 10000; flex-direction: row; bottom: calc(44px + env(safe-area-inset-bottom)); }
+        .start-sidebar { width: 40px; background: linear-gradient(to bottom, #000080, #1084d0); color: white; writing-mode: vertical-rl; transform: rotate(180deg); text-align: left; padding: 10px; font-size: 1.5rem; font-weight: bold; display: flex; align-items: center; letter-spacing: 5px; }
+        .start-items { flex-grow: 1; display: flex; flex-direction: column; padding: 2px; }
+        .menu-item { padding: 10px; display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 1.2rem; color: #000; position: relative; }
+        .menu-item:hover { background-color: #000080; color: white; }
+        .menu-item img { width: 24px; height: 24px; }
+        .menu-divider { height: 2px; background: #808080; border-bottom: 1px solid #fff; margin: 2px 0; }
+        .submenu { display: none; position: absolute; left: 100%; top: 0; width: 150px; background: var(--win-gray); box-shadow: var(--border-outset); color: #000; }
+        .menu-item:hover .submenu { display: block; }
+        .submenu .menu-item:hover { color: white; }
+        .window-container { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 600px; max-height: 80vh; background-color: var(--win-gray); box-shadow: var(--border-outset); z-index: 100; flex-direction: column; }
+        .window-container.active { display: flex; z-index: 200; }
+        .title-bar { background-color: var(--win-blue); color: var(--win-white); padding: 4px 8px; display: flex; justify-content: space-between; align-items: center; font-size: 1.3rem; flex-shrink: 0; cursor: default; }
+        .close-btn { width: 20px; height: 20px; background-color: var(--win-gray); box-shadow: var(--border-outset); display: flex; justify-content: center; align-items: center; color: var(--win-black); cursor: pointer; font-family: sans-serif; font-size: 14px; font-weight: bold; }
+        .close-btn:active { box-shadow: var(--border-inset); }
+        .window-content { padding: 15px; overflow-y: auto; flex-grow: 1; font-size: 1.2rem; line-height: 1.4; }
+        
+        /* Paint & Gallery */
+        #window-paint { 
+            width: 95vw; 
+            height: auto;
+            max-width: 600px; 
+        }
+        #paint-window .window-content { display: flex; flex-direction: column; gap: 8px; padding: 4px; overflow: hidden; background: var(--win-gray); height: 100%; box-sizing: border-box; }
+        .canvas-frame { 
+            width: 100%;
+            aspect-ratio: 1 / 1; /* KARE */
+            border: 2px solid; border-color: #808080 #ffffff #ffffff #808080; background: white; cursor: crosshair; touch-action: none; 
+        }
+        #paintCanvas { width: 100%; height: 100%; display: block; }
+        .paint-toolbar { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; padding: 4px; background: #c0c0c0; border-top: 1px solid #fff; }
+        .tool-group { display: flex; gap: 4px; align-items: center; }
+        .paint-name-input { width: 100px; font-family: inherit; padding: 2px; border: 2px solid #888; border-style: inset; }
+        .color-btn { width: 24px; height: 24px; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff; cursor: pointer; }
+        .color-btn.active { border-color: #808080 #ffffff #ffffff #808080; }
+        .alpha-btn { font-size: 1rem; background: var(--win-gray); box-shadow: var(--border-outset); border: none; cursor: pointer; }
+        .alpha-btn.active { box-shadow: var(--border-inset); background: #ddd; }
+        .btn-eraser { background-color: #ffcccc; color: #d60040; font-weight: bold; }
+        
+        .retro-btn { padding: 4px 12px; background: var(--win-gray); box-shadow: var(--border-outset); border: none; font-family: inherit; font-size: 1.1rem; cursor: pointer; }
+        .retro-btn:active { box-shadow: var(--border-inset); }
+        .event-item { border-bottom: 1px solid #888; padding-bottom: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .event-info { display: flex; flex-direction: column; }
+        .event-date { font-weight: bold; color: var(--win-blue); }
+        .buy-btn { background: #008000; color: white; text-decoration: none; padding: 5px 10px; font-size: 1rem; box-shadow: var(--border-outset); cursor: pointer; }
+        .buy-btn:active { box-shadow: var(--border-inset); }
+        #media-content, #gallery-content { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 20px; padding: 20px; background-color: #fff; align-items: start; justify-items: center; }
+        .win-file { display: flex; flex-direction: column; align-items: center; width: 100%; cursor: pointer; padding: 5px; border: 1px solid transparent; }
+        .win-file:hover { background-color: rgba(0, 0, 128, 0.1); border: 1px dotted #888; }
+        .win-thumb { width: 80px; height: 80px; object-fit: cover; border: 2px solid #fff; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); background-color: #eee; margin-bottom: 5px; }
+        .win-filename { font-size: 0.9rem; color: #000; text-align: center; word-wrap: break-word; max-width: 100%; line-height: 1.1; }
+        #window-viewer { z-index: 300 !important; }
+        #window-viewer .window-content { padding: 0; display: flex; flex-direction: column; background: #fff; }
+        .img-display-area { flex: 1; display: flex; align-items: center; justify-content: center; background: #eee; overflow: hidden; border-bottom: 2px solid #888; }
+        .img-display-area img { max-width: 100%; max-height: 100%; border: 5px solid #fff; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
+        .img-controls { padding: 10px; text-align: center; background: var(--win-gray); }
+        
+        /* Dino & Others */
+        #dino-screen { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0000aa; z-index: 20000; color: #fff; flex-direction: column; align-items: center; justify-content: center; font-family: 'VT323', monospace; }
+        #dinoCanvas { width: 100%; max-width: 600px; height: 300px; background: #0000aa; image-rendering: pixelated; border: 2px solid #fff; }
+        .dino-msg { text-align: center; margin-bottom: 20px; font-size: 1.5rem; }
+        .bsod-text { max-width: 600px; margin-top: 20px; font-size: 1.2rem; text-align: center; }
+        .subscribe-form { display: flex; flex-direction: column; gap: 15px; }
+        .win-input { border: 2px solid; border-color: #808080 #ffffff #ffffff #808080; padding: 5px; font-family: inherit; font-size: 1.2rem; }
+        .win-label { font-weight: bold; }
+        .archive-list { list-style-type: none; padding: 0; }
+        .archive-list li { margin-bottom: 10px; font-size: 1.2rem; }
+        .archive-date { font-weight: bold; color: var(--win-blue); margin-right: 10px; }
+        
+        /* ADMIN ONAY OVERLAY */
+        #admin-approve-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #008080; z-index: 999999; flex-direction: column; align-items: center; justify-content: center; color: white; font-size: 2rem; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div id="admin-approve-overlay">
+        <div>ONAYLANIYOR...</div>
+        <div style="font-size:1rem; margin-top:20px;">Lütfen bekleyin...</div>
+    </div>
+
+    <div id="crt-overlay"></div>
+    <audio id="surprise-audio" src="audio.mp3" preload="auto" loop></audio>
+
+    <div id="surprise-overlay">
+        <div id="show-timer"></div>
+        <img src="hearts.gif" class="bg-layer" alt="" onerror="this.style.display='none'">
+        <img src="disko.gif" id="discoBall" class="disco-ball" alt="" onerror="this.style.display='none'">
+        <div class="dance-floor">
+            <img src="dansfare2.gif" class="dancer d3" alt="" onerror="this.style.display='none'">
+            <img src="dansfare3.gif" class="dancer d4" alt="" onerror="this.style.display='none'">
+            <img src="kurbaga.gif" class="dancer d1" alt="" onerror="this.style.display='none'">
+            <img src="dansfare.gif" class="dancer d2" alt="" onerror="this.style.display='none'">
+        </div>
+        <button class="close-show-btn" id="closeShowBtn" onclick="closeSurprise()">ŞOVU BİTİR</button>
+    </div>
+
+    <div id="dino-screen">
+        <div class="dino-msg">SİSTEM HATASI: MAUS_RUN.EXE</div>
+        <canvas id="dinoCanvas"></canvas>
+        <div class="bsod-text">Önemli bir hata oluştu 0x000000.<br>Sistem durduruldu.</div>
+        <button class="retro-btn" style="margin-top:20px; color:#000" onclick="closeDinoAndReset()">SİSTEMİ YENİDEN BAŞLAT</button>
+    </div>
+
+    <div id="desktop">
+        <div class="desktop-icon" onclick="openWindow('about')"><img src="https://win98icons.alexmeub.com/icons/png/computer_explorer-4.png"><span>Biz Kimiz</span></div>
+        <div class="desktop-icon" onclick="openWindow('events')"><img src="https://win98icons.alexmeub.com/icons/png/calendar-1.png"><span>Etkinlikler</span></div>
+        <div class="desktop-icon" onclick="openWindow('subscribe')"><img src="https://win98icons.alexmeub.com/icons/png/modem-2.png"><span>Mail Abonelik</span></div>
+        <div class="desktop-icon" onclick="openWindow('contact')"><img src="https://win98icons.alexmeub.com/icons/png/envelope_closed-0.png"><span>İletişim</span></div>
+        <div class="desktop-icon" onclick="openLink('https://instagram.com/mausartspace')"><img src="https://win98icons.alexmeub.com/icons/png/camera-2.png"><span>Instagram</span></div>
+        <div class="desktop-icon" onclick="openWindow('map')"><img src="https://win98icons.alexmeub.com/icons/png/world-3.png"><span>Harita</span></div>
+        <div class="desktop-icon" onclick="openWindow('media')"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png"><span>Atölye Anıları</span></div>
+        <div class="desktop-icon" onclick="openWindow('gallery')"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png"><span>Paint Galerisi</span></div>
+        <div class="desktop-icon" onclick="openWindow('paint')"><img src="https://win98icons.alexmeub.com/icons/png/paint_file-2.png"><span>Maus Paint</span></div>
+    </div>
+
+    <div id="taskbar">
+        <div class="start-btn" onclick="toggleStart()"><img src="https://win98icons.alexmeub.com/icons/png/windows-0.png"> Başlat</div>
+        <div id="clock">12:00</div>
+    </div>
+
+    <div id="start-menu">
+        <div class="start-sidebar">MAUS 98</div>
+        <div class="start-items">
+            <div class="menu-item" onclick="openWindow('press')"><img src="https://win98icons.alexmeub.com/icons/png/calendar-1.png" style="width:24px;margin-right:10px;"> Basın</div>
+            <div class="menu-item" onclick="openWindow('archive')"><img src="https://win98icons.alexmeub.com/icons/png/directory_closed-4.png" style="width:24px;margin-right:10px;"> Geçmiş Sergiler</div>
+            <div class="menu-item" onclick="triggerSurprise()" style="color:#ff0000; font-weight:bold;"><img src="https://win98icons.alexmeub.com/icons/png/msg_error-0.png" style="width:24px;margin-right:10px;"> BASMA!</div>
+            <div class="menu-divider"></div>
+            <div class="menu-item"><img src="https://win98icons.alexmeub.com/icons/png/settings_gear-4.png" style="width:24px;margin-right:10px;"> Ayarlar ►
+                <div class="submenu">
+                    <div class="menu-item" onclick="changeTheme('#008080')">Klasik Teal</div>
+                    <div class="menu-item" onclick="changeTheme('#000000')">Hacker Siyah</div>
+                    <div class="menu-item" onclick="changeTheme('#ff0055')">Maus Pembe</div>
+                </div>
+            </div>
+            <div class="menu-divider"></div>
+            <div class="menu-item" onclick="startDinoGame()"><img src="https://win98icons.alexmeub.com/icons/png/msg_warning-0.png" style="width:24px;margin-right:10px;"> Sistem Hatası</div>
+            <div class="menu-divider"></div>
+            <div class="menu-item" onclick="systemReset()"><img src="https://win98icons.alexmeub.com/icons/png/shut_down_cool-4.png" style="width:24px;margin-right:10px;"> Bilgisayarı Kapat</div>
+        </div>
+    </div>
+
+    <div class="window-container" id="window-about"><div class="title-bar"><span>Biz Kimiz.txt</span><div class="close-btn" onclick="closeWindow('about')">X</div></div><div class="window-content" id="content-about"></div></div>
+    <div class="window-container" id="window-events"><div class="title-bar"><span>Etkinlik Takvimi</span><div class="close-btn" onclick="closeWindow('events')">X</div></div><div class="window-content" id="content-events">Yükleniyor...</div></div>
+    
+    <div class="window-container" id="window-subscribe"><div class="title-bar"><span>Mail Abonelik</span><div class="close-btn" onclick="closeWindow('subscribe')">X</div></div><div class="window-content">
+        <form class="subscribe-form" id="subForm">
+            <p>En yeni etkinliklerden haberdar olmak için abone ol!</p>
+            <input type="hidden" name="_subject" value="Yeni Web Abonesi">
+            <input type="hidden" name="_captcha" value="false">
+            <div><div class="win-label">E-Posta Adresin:</div><input type="email" name="email" class="win-input" placeholder="ornek@maus.com" style="width:95%" required></div>
+            <button type="submit" class="retro-btn">ABONE OL</button>
+        </form>
+        <div id="sub-success" style="display:none; text-align:center; color:green; margin-top:20px;"><h3>✅ BAŞARILI!</h3><p>Aboneliğin alındı.</p></div>
+    </div></div>
+    
+    <div class="window-container" id="window-contact"><div class="title-bar"><span>İletişim</span><div class="close-btn" onclick="closeWindow('contact')">X</div></div><div class="window-content" id="content-contact"></div></div>
+    <div class="window-container" id="window-map"><div class="title-bar"><span>Maus Maps</span><div class="close-btn" onclick="closeWindow('map')">X</div></div><div class="window-content" style="padding:0; display:flex; flex-direction:column; background:#eef;"><img src="map.jpg" style="width:100%; height:auto; max-height:300px; object-fit:cover; border-bottom:2px solid #888;" alt="Harita" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div style=\'padding:20px;text-align:center\'>map.jpg yüklenemedi</div>')"><div style="padding:15px; text-align:center; background:#fff;"><p style="font-size:1.5rem; color:#008000; font-weight:bold; margin:0;">MAUS ART SPACE</p><p style="margin-top:5px;">Güvenlik Caddesi 17a, Ankara</p></div></div></div>
+    
+    <div class="window-container" id="window-press"><div class="title-bar"><span>Basın Odası</span><div class="close-btn" onclick="closeWindow('press')">X</div></div><div class="window-content"><h3>Maus Art Space Basında</h3><ul><li><strong>📰 Sanat Dünyası:</strong> "Ankara'nın Yeni Soluğu" - <a href="https://aposto.com/s/ankaranin-yenisi-maus-art-space" target="_blank">Oku</a></li><li><strong>📰 Artist Safe Zone:</strong> "Çember Resim Vakti" - <a href="https://www.artistsafezone.com/post/%C3%A7ember-resim-vakti-maus-art-space-in-at%C3%B6lyesinde-bize-e%C5%9Flik-edin" target="_blank">Oku</a></li><li><strong>📰 Gazete Duvar:</strong> "Ankara'da kendi halinde bir vaha" - <a href="https://www.gazeteduvar.com.tr/maus-art-space-ankarada-kendi-halinde-bir-vaha-haber-1757202" target="_blank">Oku</a></li><li><strong>📺 Instagram:</strong> "Bizimle Tanışın" - <a href="https://www.instagram.com/p/DF5NufRtX8S/" target="_blank">İzle</a></li></ul></div></div>
+    
+    <div class="window-container" id="window-archive"><div class="title-bar"><span>Geçmiş Sergiler</span><div class="close-btn" onclick="closeWindow('archive')">X</div></div><div class="window-content"><ul class="archive-list"><li><span class="archive-date">14 Eylül 2024</span> Fare Açılış Sergisi</li><li><span class="archive-date">27 Aralık 2024</span> Transfer</li><li><span class="archive-date">11 Ocak 2025</span> Hatice Karakaş - Evdekiler</li><li><span class="archive-date">8 Şubat 2025</span> Sinan Hasar - Kafa Kağıdı</li><li><span class="archive-date">22 Şubat 2025</span> 9 Sergisi</li><li><span class="archive-date">11 Nisan 2025</span> Evvela Sergisi</li><li><span class="archive-date">25 Nisan 2025</span> Ev Ankara - Kapı Sergisi</li><li><span class="archive-date">10 Mayıs 2025</span> Eda Gizem Uğur - Yatırım Tavsiyesi Değildir</li><li><span class="archive-date">31 Mayıs 2025</span> Ahmet Mert Hasret - Artık Hep Birlikte Misafiriz</li><li><span class="archive-date">21 Haziran 2025</span> Ece Kaşkır & Ecem Beşir - Uyanığın Gölgesi</li><li><span class="archive-date">6 Eylül 2025</span> Fare II Sergisi</li><li><span class="archive-date">19 Eylül 2025</span> Bi'yerde Görmüştüm</li><li><span class="archive-date">10 Ekim 2025</span> Imgelem/r ve Yansımalar</li><li><span class="archive-date">31 Ekim 2025</span> Furkan Cin & Melih Uçmaz - Vahşi, Kötü ve Çirkin</li></ul></div></div>
+    
+    <div class="window-container" id="window-paint"><div class="title-bar"><span>Maus Paint</span><div class="close-btn" onclick="closeWindow('paint')">X</div></div><div class="window-content"><div class="canvas-frame"><canvas id="paintCanvas"></canvas></div><div class="paint-toolbar"><div class="tool-group"><div class="color-btn active" style="background:#000;" onclick="setColor('#000000',this)"></div><div class="color-btn" style="background:#f00;" onclick="setColor('#ff0000',this)"></div><div class="color-btn" style="background:#ff0;" onclick="setColor('#ffff00',this)"></div><div class="color-btn" style="background:#00f;" onclick="setColor('#0000ff',this)"></div></div><div class="tool-group"><button class="alpha-btn active" onclick="setOpacity(1,this)">Tam</button><button class="alpha-btn" onclick="setOpacity(0.3,this)">Saydam</button><button class="retro-btn btn-eraser" onclick="setEraser()">SİLGİ</button></div><div class="tool-group"><input type="text" id="painter-name" class="paint-name-input" placeholder="İsim (Opsiyonel)"><button class="retro-btn" onclick="clearPaint()">YENİ</button><button class="retro-btn" style="color:blue;" onclick="processDrawing()">GÖNDER</button></div></div></div></div>
+    
+    <div class="window-container" id="window-gallery" style="height:60vh;"><div class="title-bar"><span>C:\Paint Galerisi</span><div class="close-btn" onclick="closeWindow('gallery')">X</div></div><div class="window-content" id="gallery-content"><p style="text-align:center">Yükleniyor...</p></div></div>
+    
+    <div class="window-container" id="window-media" style="height:60vh;"><div class="title-bar"><span>C:\Atölye Anıları</span><div class="close-btn" onclick="closeWindow('media')">X</div></div><div class="window-content" id="media-content">
+        <div class="win-file" onclick="openPhoto('atolye1.jpg','Atölye 1')"><img src="atolye1.jpg" class="win-thumb" onerror="this.src='https://win98icons.alexmeub.com/icons/png/image_file-2.png'"><div class="win-filename">atolye1.jpg</div></div>
+        <div class="win-file" onclick="openPhoto('atolye2.jpg','Atölye 2')"><img src="atolye2.jpg" class="win-thumb" onerror="this.src='https://win98icons.alexmeub.com/icons/png/image_file-2.png'"><div class="win-filename">atolye2.jpg</div></div>
+        <div class="win-file" onclick="openPhoto('atolye3.jpg','Atölye 3')"><img src="atolye3.jpg" class="win-thumb" onerror="this.src='https://win98icons.alexmeub.com/icons/png/image_file-2.png'"><div class="win-filename">atolye3.jpg</div></div>
+        <div class="win-file" onclick="openPhoto('atolye4.jpg','Atölye 4')"><img src="atolye4.jpg" class="win-thumb" onerror="this.src='https://win98icons.alexmeub.com/icons/png/image_file-2.png'"><div class="win-filename">atolye4.jpg</div></div>
+        <div class="win-file" onclick="openPhoto('atolye5.jpg','Atölye 5')"><img src="atolye5.jpg" class="win-thumb" onerror="this.src='https://win98icons.alexmeub.com/icons/png/image_file-2.png'"><div class="win-filename">atolye5.jpg</div></div>
+        <div class="win-file" onclick="openPhoto('atolye6.jpg','Atölye 6')"><img src="atolye6.jpg" class="win-thumb" onerror="this.src='https://win98icons.alexmeub.com/icons/png/image_file-2.png'"><div class="win-filename">atolye6.jpg</div></div>
+        <div class="win-file" onclick="openPhoto('atolye7.jpg','Atölye 7')"><img src="atolye7.jpg" class="win-thumb" onerror="this.src='https://win98icons.alexmeub.com/icons/png/image_file-2.png'"><div class="win-filename">atolye7.jpg</div></div>
+        <div class="win-file" onclick="openPhoto('atolye8.jpg','Atölye 8')"><img src="atolye8.jpg" class="win-thumb" onerror="this.src='https://win98icons.alexmeub.com/icons/png/image_file-2.png'"><div class="win-filename">atolye8.jpg</div></div>
+        <div class="win-file" onclick="openPhoto('atolye9.jpg','Atölye 9')"><img src="atolye9.jpg" class="win-thumb" onerror="this.src='https://win98icons.alexmeub.com/icons/png/image_file-2.png'"><div class="win-filename">atolye9.jpg</div></div>
+    </div></div>
+    
+    <div class="window-container" id="window-viewer" style="height:80vh; width:90%; max-width:800px;"><div class="title-bar"><span id="viewer-title">Resim</span><div class="close-btn" onclick="closeViewer()">X</div></div><div class="window-content" style="padding:0; display:flex; background:#fff;"><div class="img-display-area"><img id="viewer-img" src=""></div><div class="img-controls"><button class="retro-btn" onclick="closeViewer()">RESMİ KAPAT</button></div></div></div>
+
+    <script>
+        // -------------------------------------------------------------
+        // FIREBASE & TELEGRAM AYARLARI
+        // -------------------------------------------------------------
+        const firebaseConfig = {
+            apiKey: "AIzaSyDtMxhVBNBG9rH6Vog40nGA2WusJr4o7lY",
+            authDomain: "maus-8abc9.firebaseapp.com",
+            projectId: "maus-8abc9",
+            storageBucket: "maus-8abc9.firebasestorage.app",
+            messagingSenderId: "510048575178",
+            appId: "1:510048575178:web:593c77e66462fc28f2de33",
+            measurementId: "G-87744QJ9GD"
+        };
+        
+        const TG_BOT_TOKEN = "8356360725:AAFuBFPv-gnw8e7jl9LJWma0qeQxvllNg6Q"; 
+        const TG_CHAT_ID = "1903503080";
+        // -------------------------------------------------------------
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // --- URL'DEN ONAY YAKALAMA ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const approveId = urlParams.get('approve');
+
+        if (approveId) {
+            document.getElementById('admin-approve-overlay').style.display = 'flex';
+            db.collection("gallery").doc(approveId).update({
+                status: "approved"
+            }).then(() => {
+                document.getElementById('admin-approve-overlay').innerHTML = "<h1>✅ ONAYLANDI!</h1><p>Çizim galeride yayınlandı. Bu pencereyi kapatabilirsiniz.</p>";
+            }).catch((error) => {
+                console.error("Hata:", error);
+                document.getElementById('admin-approve-overlay').innerHTML = "<h1>❌ HATA!</h1><p>"+error.message+"</p>";
+            });
+        }
+
+        // --- GALERİ ÇEKME ---
+        function loadFirebaseGallery() {
+            const gal = document.getElementById('gallery-content');
+            db.collection("gallery").where("status", "==", "approved").onSnapshot((snapshot) => {
+                let items = [];
+                snapshot.forEach((doc) => { items.push(doc.data()); });
+                
+                items.sort((a, b) => {
+                    if(!a.createdAt || !b.createdAt) return 0;
+                    return b.createdAt.seconds - a.createdAt.seconds;
+                });
+
+                let html = "";
+                if(items.length === 0) { html = "<p style='width:100%;text-align:center'>Henüz onaylanmış çizim yok.</p>"; }
+                
+                items.forEach((item) => {
+                    let displayName = item.name ? item.name : "Çizim";
+                    html += `<div class="win-file" onclick="openPhoto('${item.image}','${displayName}')"><img src="${item.image}" class="win-thumb"><div class="win-filename">${displayName}</div></div>`;
+                });
+                gal.innerHTML = html;
+            });
+        }
+
+        function loadFirebaseEvents() {
+            const list = document.getElementById('content-events');
+            db.collection("events").orderBy("date", "desc").get().then((querySnapshot) => {
+                let html = "";
+                if(querySnapshot.empty) { html = "<p>Şu an planlanan etkinlik yok.</p>"; }
+                querySnapshot.forEach((doc) => {
+                    const evt = doc.data();
+                    html += `<div class="event-item"><div class="event-info"><span class="event-date">${evt.date}</span><span>${evt.title}</span></div>${evt.link && evt.link!=='#' ? `<a href="${evt.link}" target="_blank" class="buy-btn">BİLET AL</a>` : ''}</div>`;
+                });
+                list.innerHTML = html;
+            }).catch(() => {
+                list.innerHTML = `<div class="event-item"><div class="event-info"><span class="event-date">25 Kasım</span><span>Retro Sergi</span></div></div>`;
+            });
+        }
+        loadFirebaseEvents();
+
+        // --- ÇİZİM GÖNDERME (BEYAZ ARKA PLAN DÜZELTMESİ) ---
+        window.processDrawing = () => {
+            const painterName = document.getElementById('painter-name').value || "Anonim";
+            
+            if(!confirm(`Çizimin "${painterName}" ismiyle onaya gönderilecek. Onaylıyor musun?`)) return;
+            
+            const btn = document.querySelector('button[onclick="processDrawing()"]');
+            const originalText = btn.innerText;
+            btn.innerText = "GÖNDERİLİYOR..."; btn.disabled = true;
+
+            pCanvas.toBlob((blob) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(blob); 
+                reader.onloadend = function() {
+                    const base64data = reader.result;
+                    
+                    const tempImg = new Image();
+                    tempImg.src = base64data;
+                    tempImg.onload = function() {
+                        const tempCanvas = document.createElement('canvas');
+                        const ctx = tempCanvas.getContext('2d');
+                        tempCanvas.width = pCanvas.width;
+                        tempCanvas.height = pCanvas.height;
+                        
+                        // 1. BEYAZ ZEMİN
+                        ctx.fillStyle = "#FFFFFF";
+                        ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+                        
+                        // 2. ÇİZİM
+                        ctx.drawImage(tempImg, 0, 0);
+                        
+                        // 3. JPEG ÇEVİRME (0.5 Kalite)
+                        const optimizedBase64 = tempCanvas.toDataURL('image/jpeg', 0.5); 
+
+                        db.collection("gallery").add({
+                            image: optimizedBase64,
+                            status: "pending",
+                            name: painterName,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        }).then((docRef) => {
+                            
+                            const currentUrl = window.location.href.split('?')[0]; 
+                            const approveLink = `${currentUrl}?approve=${docRef.id}`;
+                            
+                            const msgText = `🎨 <b>Yeni Maus Paint Çizimi!</b>\n\n👤 <b>Çizen:</b> ${painterName}\n\nOnaylamak için tıkla:\n<a href="${approveLink}">👉 RESMİ ONAYLA</a>`;
+
+                            const formData = new FormData();
+                            formData.append("chat_id", TG_CHAT_ID);
+                            formData.append("caption", msgText);
+                            formData.append("photo", blob, `${painterName}_maus_cizim.png`);
+                            formData.append("parse_mode", "HTML");
+
+                            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendPhoto`, {
+                                method: 'POST',
+                                body: formData
+                            }).then(() => {
+                                alert("✅ Çizim yöneticiye gönderildi!");
+                                btn.innerText = "GÖNDERİLDİ";
+                                setTimeout(() => { btn.innerText = originalText; btn.disabled = false; clearPaint(); document.getElementById('painter-name').value=''; }, 2000);
+                            });
+
+                        }).catch((error) => {
+                            console.error("Hata:", error);
+                            alert("❌ Kayıt başarısız.");
+                            btn.innerText = originalText; btn.disabled = false;
+                        });
+                    };
+                }
+            }, 'image/png');
+        };
+
+        // --- MAİL ABONELİK ---
+        const subForm = document.getElementById('subForm');
+        subForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = subForm.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = "KAYDEDİLİYOR..."; btn.disabled = true;
+
+            const formData = new FormData(subForm);
+            fetch("https://formsubmit.co/ajax/hello@mausart.space", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(Object.fromEntries(formData))
+            })
+            .then(response => response.json())
+            .then(data => {
+                subForm.style.display = 'none';
+                document.getElementById('sub-success').style.display = 'block';
+            })
+            .catch(error => {
+                alert('Hata oluştu.');
+                btn.innerText = originalText; btn.disabled = false;
+            });
+        });
+
+        const MAUS_INFO = { about: `<p>Maus Art Space, sanatın herkes için erişilebilir olduğu bir platform yaratmayı hedefleyerek yola çıkan, Ankara’da bulunan bir sanat alanı.</p><br><p>Maus, yaratıcı üretimi teşvik etmek, sanatçıların ve sanat meraklılarının biraraya gelerek etkileşimde bulunabilmeleri amacıyla 14 Eylül 2024'te açıldı.</p>`, contact: `<p>📧 hello@mausart.space</p><p>📍 Güvenlik Caddesi 17a</p>` };
+        document.getElementById('content-about').innerHTML = MAUS_INFO.about; document.getElementById('content-contact').innerHTML = MAUS_INFO.contact;
+        setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}), 1000);
+        function toggleStart() { const m = document.getElementById('start-menu'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; document.querySelector('.start-btn').classList.toggle('active'); }
+        document.getElementById('desktop').addEventListener('click', () => { document.getElementById('start-menu').style.display = 'none'; document.querySelector('.start-btn').classList.remove('active'); });
+        function changeTheme(c) { document.body.style.backgroundColor=c; document.querySelectorAll('.desktop-icon span').forEach(s=>s.style.backgroundColor=c); }
+        function openLink(url) { window.open(url, '_blank'); }
+        function systemReset() { document.getElementById('crt-overlay').style.display='block'; document.getElementById('crt-overlay').classList.add('crt-anim'); setTimeout(()=>location.reload(), 600); }
+        function closeAllWindows() { document.querySelectorAll('.window-container').forEach(w => { if(w.id !== 'window-viewer') w.classList.remove('active'); }); closeSurprise(); closeDino(); }
+        function openWindow(id) { closeAllWindows(); const w = document.getElementById('window-'+id); if(w) { w.classList.add('active'); w.style.zIndex = 100; if(id==='paint') setTimeout(resizePaintCanvas, 50); if(id==='gallery') loadFirebaseGallery(); if(id==='events') loadFirebaseEvents(); } }
+        function closeWindow(id) { document.getElementById('window-'+id).classList.remove('active'); }
+        function openPhoto(src, t) { document.getElementById('viewer-img').src=src; document.getElementById('viewer-title').innerText=t; document.getElementById('window-viewer').classList.add('active'); document.getElementById('window-viewer').style.zIndex = 999; }
+        function closeViewer() { document.getElementById('window-viewer').classList.remove('active'); }
+
+        const pCanvas = document.getElementById('paintCanvas'); const pCtx = pCanvas.getContext('2d');
+        let isDrawing=false, lastX=0, lastY=0, pColor='#000', pAlpha=1, isEraser=false;
+        function resizePaintCanvas() { 
+            const containerWidth = pCanvas.parentElement.clientWidth;
+            pCanvas.width = containerWidth; 
+            pCanvas.height = containerWidth; 
+            updateContext(); 
+        }
+        function updateContext() { pCtx.lineWidth = isEraser?20:4; pCtx.lineCap='round'; pCtx.strokeStyle = isEraser?'#ffffff':pColor; pCtx.globalAlpha = isEraser?1:pAlpha; }
+        window.setColor = (c,b) => { isEraser=false; pColor=c; document.querySelectorAll('.color-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); updateContext(); }
+        window.setOpacity = (a,b) => { isEraser=false; pAlpha=a; document.querySelectorAll('.alpha-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); updateContext(); }
+        window.setEraser = () => { isEraser=true; updateContext(); }
+        function getPos(e) { const r=pCanvas.getBoundingClientRect(); const x=e.touches?e.touches[0].clientX:e.clientX; const y=e.touches?e.touches[0].clientY:e.clientY; return {x:x-r.left, y:y-r.top}; }
+        function startP(e) { e.preventDefault(); isDrawing=true; const p=getPos(e); lastX=p.x; lastY=p.y; pCtx.beginPath(); pCtx.moveTo(lastX,lastY); pCtx.lineTo(lastX,lastY); pCtx.stroke(); pCanvas.setPointerCapture(e.pointerId); }
+        function moveP(e) { if(!isDrawing)return; e.preventDefault(); const p=getPos(e); pCtx.beginPath(); pCtx.moveTo(lastX,lastY); pCtx.lineTo(p.x,p.y); pCtx.stroke(); lastX=p.x; lastY=p.y; }
+        function stopP() { isDrawing=false; }
+        pCanvas.addEventListener('pointerdown',startP); pCanvas.addEventListener('pointermove',moveP); pCanvas.addEventListener('pointerup',stopP);
+        window.clearPaint = () => pCtx.clearRect(0,0,pCanvas.width, pCanvas.height);
+        
+        const timerDisplay=document.getElementById('show-timer'), closeBtn=document.getElementById('closeShowBtn'); let countdownInterval;
+        function triggerSurprise() { document.getElementById('start-menu').style.display='none'; document.getElementById('surprise-overlay').style.display='flex'; document.getElementById('discoBall').classList.add('drop'); const audio=document.getElementById('surprise-audio'); audio.currentTime=0; audio.play().catch(e=>{}); let timeLeft=10; timerDisplay.innerText=timeLeft; timerDisplay.style.display='block'; closeBtn.style.display='none'; if(countdownInterval) clearInterval(countdownInterval); countdownInterval=setInterval(()=>{ timeLeft--; timerDisplay.innerText=timeLeft; if(timeLeft<=0){ clearInterval(countdownInterval); timerDisplay.style.display='none'; closeBtn.style.display='block'; } },1000); }
+        function closeSurprise() { document.getElementById('surprise-overlay').style.display='none'; document.getElementById('discoBall').classList.remove('drop'); const audio=document.getElementById('surprise-audio'); audio.pause(); audio.currentTime=0; clearInterval(countdownInterval); }
+        
+        const dCanvas=document.getElementById('dinoCanvas'), dCtx=dCanvas.getContext('2d');
+        // Farenin resmi yükleniyor (dino.png dosyasının ana dizinde olması gerek)
+        const dinoImg = new Image(); dinoImg.src = 'dino.png'; 
+        let dInt, dSpd=6, dSc=0, dPly={x:50,y:200,w:30,h:30,dy:0,jump:false,g:200}, dObs=[], dGameRunning = false;
+        function startDinoGame() { closeAllWindows(); document.getElementById('dino-screen').style.display='flex'; dCanvas.width=600;dCanvas.height=300; dSc=0; dSpd=6; dObs=[]; dPly.y=dPly.g; dPly.dy=0; dGameRunning = false; dCtx.fillStyle='#0000aa'; dCtx.fillRect(0,0,600,300); dCtx.fillStyle='#fff'; dCtx.font="30px monospace"; dCtx.textAlign="center"; dCtx.fillText("BAŞLAMAK İÇİN TIKLA", 300, 150); window.addEventListener('keydown',dJump); dCanvas.addEventListener('touchstart',dJump); dCanvas.addEventListener('mousedown',dJump); if(dInt) clearInterval(dInt); dInt=setInterval(dLoop,20); }
+        function closeDinoAndReset() { closeDino(); systemReset(); }
+        function closeDino() { clearInterval(dInt); window.removeEventListener('keydown',dJump); dCanvas.removeEventListener('touchstart',dJump); dCanvas.removeEventListener('mousedown',dJump); document.getElementById('dino-screen').style.display='none'; }
+        function dJump(e) { if((e.code==='Space'||e.type==='touchstart'||e.type==='mousedown')) { e.preventDefault(); if(!dGameRunning) { dGameRunning = true; dSpd=6; dSc=0; dObs=[]; } else if(!dPly.jump) { dPly.dy=-15; dPly.jump=true; } } }
+        function dLoop() { if(!dGameRunning) return; dPly.dy+=0.9; dPly.y+=dPly.dy; if(dPly.y>dPly.g){dPly.y=dPly.g;dPly.jump=false;} let canSpawn = dObs.length === 0 || dObs[dObs.length-1].x < 450; let rate = 0.015 + (dSc * 0.0001); if(canSpawn && Math.random() < rate) { let h = 30 + Math.random()*30; dObs.push({x:600,w:25,h:h}); } dObs.forEach(o=>o.x-=dSpd); dObs=dObs.filter(o=>o.x>-50); dObs.forEach(o=>{ if(dPly.x<o.x+o.w && dPly.x+dPly.w>o.x && dPly.y<240 && dPly.y+dPly.h>240-o.h){ dGameRunning=false; dCtx.fillStyle='#fff'; dCtx.font="30px monospace"; dCtx.textAlign="center"; dCtx.fillText("OYUN BİTTİ! SKOR: "+Math.floor(dSc), 300, 150); dCtx.font="20px monospace"; dCtx.fillText("Tekrar oynamak için TIKLA", 300, 180); }}); dSc+=0.15; dSpd = 6 + (dSc * 0.04); dCtx.fillStyle='#0000aa'; dCtx.fillRect(0,0,600,300); dCtx.fillStyle='#fff'; dCtx.fillRect(0,230,600,2); 
+        // FARE RESMİ ÇİZİLİYOR
+        dCtx.drawImage(dinoImg, dPly.x, dPly.y, dPly.w, dPly.h); 
+        dObs.forEach(o=>dCtx.fillRect(o.x,230-o.h,o.w,o.h)); dCtx.font="20px monospace"; dCtx.textAlign="left"; dCtx.fillText("SKOR: "+Math.floor(dSc),20,30); }
+        window.addEventListener('resize', () => { if(document.getElementById('window-paint').classList.contains('active')) resizePaintCanvas(); });
+    </script>
+</body>
+</html>
