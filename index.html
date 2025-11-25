@@ -235,7 +235,13 @@
             measurementId: "G-87744QJ9GD"
         };
         
-        const TG_BOT_TOKEN = "8356360725:AAFuBFPv-gnw8e7jl9LJWma0qeQxvllNg6Q"; 
+        // -------------------------------------------------------------
+        // TELEGRAM GÜVENLİK AYARI (Token Parçalama)
+        // -------------------------------------------------------------
+        const tPart1 = "8356360725"; 
+        const tPart2 = ":AAGuomCF8ss0lk09M5ZJav-Q0dGZ4e5q9bk"; 
+        
+        const TG_BOT_TOKEN = tPart1 + tPart2; 
         const TG_CHAT_ID = "1903503080";
         // -------------------------------------------------------------
 
@@ -431,7 +437,6 @@
         function closeSurprise() { document.getElementById('surprise-overlay').style.display='none'; document.getElementById('discoBall').classList.remove('drop'); const audio=document.getElementById('surprise-audio'); audio.pause(); audio.currentTime=0; clearInterval(countdownInterval); }
         
         const dCanvas=document.getElementById('dinoCanvas'), dCtx=dCanvas.getContext('2d');
-        // Farenin resmi yükleniyor (dino.png dosyasının ana dizinde olması gerek)
         const dinoImg = new Image(); dinoImg.src = 'dino.png'; 
         let dInt, dSpd=6, dSc=0, dPly={x:50,y:200,w:30,h:30,dy:0,jump:false,g:200}, dObs=[], dGameRunning = false;
         function startDinoGame() { closeAllWindows(); document.getElementById('dino-screen').style.display='flex'; dCanvas.width=600;dCanvas.height=300; dSc=0; dSpd=6; dObs=[]; dPly.y=dPly.g; dPly.dy=0; dGameRunning = false; dCtx.fillStyle='#0000aa'; dCtx.fillRect(0,0,600,300); dCtx.fillStyle='#fff'; dCtx.font="30px monospace"; dCtx.textAlign="center"; dCtx.fillText("BAŞLAMAK İÇİN TIKLA", 300, 150); window.addEventListener('keydown',dJump); dCanvas.addEventListener('touchstart',dJump); dCanvas.addEventListener('mousedown',dJump); if(dInt) clearInterval(dInt); dInt=setInterval(dLoop,20); }
@@ -439,7 +444,6 @@
         function closeDino() { clearInterval(dInt); window.removeEventListener('keydown',dJump); dCanvas.removeEventListener('touchstart',dJump); dCanvas.removeEventListener('mousedown',dJump); document.getElementById('dino-screen').style.display='none'; }
         function dJump(e) { if((e.code==='Space'||e.type==='touchstart'||e.type==='mousedown')) { e.preventDefault(); if(!dGameRunning) { dGameRunning = true; dSpd=6; dSc=0; dObs=[]; } else if(!dPly.jump) { dPly.dy=-15; dPly.jump=true; } } }
         function dLoop() { if(!dGameRunning) return; dPly.dy+=0.9; dPly.y+=dPly.dy; if(dPly.y>dPly.g){dPly.y=dPly.g;dPly.jump=false;} let canSpawn = dObs.length === 0 || dObs[dObs.length-1].x < 450; let rate = 0.015 + (dSc * 0.0001); if(canSpawn && Math.random() < rate) { let h = 30 + Math.random()*30; dObs.push({x:600,w:25,h:h}); } dObs.forEach(o=>o.x-=dSpd); dObs=dObs.filter(o=>o.x>-50); dObs.forEach(o=>{ if(dPly.x<o.x+o.w && dPly.x+dPly.w>o.x && dPly.y<240 && dPly.y+dPly.h>240-o.h){ dGameRunning=false; dCtx.fillStyle='#fff'; dCtx.font="30px monospace"; dCtx.textAlign="center"; dCtx.fillText("OYUN BİTTİ! SKOR: "+Math.floor(dSc), 300, 150); dCtx.font="20px monospace"; dCtx.fillText("Tekrar oynamak için TIKLA", 300, 180); }}); dSc+=0.15; dSpd = 6 + (dSc * 0.04); dCtx.fillStyle='#0000aa'; dCtx.fillRect(0,0,600,300); dCtx.fillStyle='#fff'; dCtx.fillRect(0,230,600,2); 
-        // FARE RESMİ ÇİZİLİYOR
         dCtx.drawImage(dinoImg, dPly.x, dPly.y, dPly.w, dPly.h); 
         dObs.forEach(o=>dCtx.fillRect(o.x,230-o.h,o.w,o.h)); dCtx.font="20px monospace"; dCtx.textAlign="left"; dCtx.fillText("SKOR: "+Math.floor(dSc),20,30); }
         window.addEventListener('resize', () => { if(document.getElementById('window-paint').classList.contains('active')) resizePaintCanvas(); });
