@@ -9,7 +9,9 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script> <style>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+
+    <style>
         :root { --win-teal: #008080; --win-gray: #c0c0c0; --win-blue: #000080; --win-white: #ffffff; --win-black: #000000; --border-inset: inset -2px -2px #ffffff, inset 2px 2px #808080, inset -1px -1px #c0c0c0, inset 1px 1px #000000; --border-outset: inset -2px -2px #808080, inset 2px 2px #ffffff, inset -1px -1px #c0c0c0, inset 1px 1px #c0c0c0; }
         * { box-sizing: border-box; }
         body { margin: 0; height: 100vh; overflow: hidden; background-color: var(--win-teal); font-family: 'VT323', monospace; user-select: none; transition: background-color 0.5s; touch-action: none; padding-top: env(safe-area-inset-top); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
@@ -30,12 +32,33 @@
         .crt-anim { animation: turn-off 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
         @keyframes turn-off { 0% { transform: scale(1, 1.3); opacity: 1; } 100% { transform: scale(0, 0.001); opacity: 0; } }
         
-        /* Desktop & Windows */
-        #desktop { padding: 20px; display: flex; flex-direction: column; gap: 15px; align-items: flex-start; flex-wrap: wrap; height: 85vh; margin-top: 10px; }
-        .desktop-icon { display: flex; flex-direction: column; align-items: center; width: 90px; cursor: pointer; text-align: center; color: var(--win-white); z-index: 1; margin-bottom: 5px; }
+        /* Desktop & Windows (HİZALAMA DÜZELTİLDİ) */
+        #desktop { 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; /* Sütunlar halinde (yukarıdan aşağı) */
+            flex-wrap: wrap;        /* Sığmazsa yana geç */
+            align-content: flex-start; /* Sola yasla */
+            height: 85vh;           /* Yükseklik sınırı (wrap çalışması için şart) */
+            gap: 10px; 
+            margin-top: 10px; 
+        }
+        .desktop-icon { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            width: 90px; 
+            height: 90px; /* Sabit yükseklik (hizalama bozulmasın diye) */
+            cursor: pointer; 
+            text-align: center; 
+            color: var(--win-white); 
+            z-index: 1; 
+            margin-bottom: 5px; 
+        }
         .desktop-icon img { width: 48px; height: 48px; margin-bottom: 5px; image-rendering: pixelated; filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.5)); }
         .desktop-icon span { background-color: var(--win-teal); padding: 2px 5px; font-size: 1.1rem; line-height: 1.1; }
         .desktop-icon:active img { opacity: 0.7; filter: grayscale(100%); }
+        
         #taskbar { position: fixed; bottom: 0; left: 0; width: 100%; height: auto; min-height: 40px; background-color: var(--win-gray); box-shadow: var(--border-outset); display: flex; justify-content: space-between; align-items: center; padding: 4px 4px calc(4px + env(safe-area-inset-bottom)) 4px; z-index: 9999; }
         .start-btn { display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 10px; background-color: var(--win-gray); box-shadow: var(--border-outset); font-weight: bold; font-size: 1.2rem; cursor: pointer; }
         .start-btn.active { box-shadow: var(--border-inset); background: #ddd; }
@@ -78,12 +101,9 @@
         .event-date { font-weight: bold; color: var(--win-blue); }
         .buy-btn { background: #008000; color: white; text-decoration: none; padding: 5px 10px; font-size: 1rem; box-shadow: var(--border-outset); cursor: pointer; }
         .buy-btn:active { box-shadow: var(--border-inset); }
-        
-        /* ADMIN STYLES */
         .admin-login { display: flex; flex-direction: column; gap: 10px; align-items: center; padding: 20px; }
-        .admin-input { width: 95%; padding: 5px; font-family: inherit; margin-bottom: 5px; border: 2px solid #888; border-style: inset; font-size: 1.1rem;}
-        .admin-list-item { background: #fff; border: 1px solid #888; padding: 5px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; font-size: 1rem;}
-        
+        .admin-input { width: 95%; padding: 5px; font-family: inherit; margin-bottom: 5px; border: 2px solid #888; border-style: inset; font-size: 1.1rem; }
+        .admin-list-item { background: #fff; border: 1px solid #888; padding: 5px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; font-size: 1rem; }
         #media-content, #gallery-content { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 20px; padding: 20px; background-color: #fff; align-items: start; justify-items: center; }
         .win-file { display: flex; flex-direction: column; align-items: center; width: 100%; cursor: pointer; padding: 5px; border: 1px solid transparent; }
         .win-file:hover { background-color: rgba(0, 0, 128, 0.1); border: 1px dotted #888; }
@@ -239,9 +259,7 @@
     <div class="window-container" id="window-viewer" style="height:80vh; width:90%; max-width:800px;"><div class="title-bar"><span id="viewer-title">Resim</span><div class="close-btn" onclick="closeViewer()">X</div></div><div class="window-content" style="padding:0; display:flex; background:#fff;"><div class="img-display-area"><img id="viewer-img" src=""></div><div class="img-controls"><button class="retro-btn" onclick="closeViewer()">RESMİ KAPAT</button></div></div></div>
 
     <script>
-        // -------------------------------------------------------------
-        // FIREBASE & TELEGRAM AYARLARI
-        // -------------------------------------------------------------
+        // --- FIREBASE CONFIG ---
         const firebaseConfig = {
             apiKey: "AIzaSyDtMxhVBNBG9rH6Vog40nGA2WusJr4o7lY",
             authDomain: "maus-8abc9.firebaseapp.com",
@@ -254,73 +272,53 @@
         
         const tPart1 = "8356360725"; 
         const tPart2 = ":AAGuomCF8ss0lk09M5ZJav-Q0dGZ4e5q9bk"; 
-        
         const TG_BOT_TOKEN = tPart1 + tPart2; 
         const TG_CHAT_ID = "1903503080";
-        // -------------------------------------------------------------
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // --- URL'DEN ONAY YAKALAMA ---
+        // --- OTO ADMIN AÇMA VE URL ONAY ---
         const urlParams = new URLSearchParams(window.location.search);
-        const approveId = urlParams.get('approve');
-
-        if (approveId) {
-            document.getElementById('admin-approve-overlay').style.display = 'flex';
-            db.collection("gallery").doc(approveId).update({
-                status: "approved"
-            }).then(() => {
-                document.getElementById('admin-approve-overlay').innerHTML = "<h1>✅ ONAYLANDI!</h1><p>Çizim galeride yayınlandı. Bu pencereyi kapatabilirsiniz.</p>";
-            }).catch((error) => {
-                console.error("Hata:", error);
-                document.getElementById('admin-approve-overlay').innerHTML = "<h1>❌ HATA!</h1><p>"+error.message+"</p>";
-            });
+        
+        // 1. Admin Parametresi Varsa Paneli Aç
+        if (urlParams.has('admin')) {
+            window.onload = function() { openWindow('admin'); }
         }
 
-        // --- YÖNETİCİ PANELİ İŞLEMLERİ (GÜVENLİ LOGİN) ---
+        // 2. Onay Parametresi Varsa Onayla
+        const approveId = urlParams.get('approve');
+        if (approveId) {
+            document.getElementById('admin-approve-overlay').style.display = 'flex';
+            db.collection("gallery").doc(approveId).update({ status: "approved" })
+            .then(() => { document.getElementById('admin-approve-overlay').innerHTML = "<h1>✅ ONAYLANDI!</h1><p>Çizim galeride yayınlandı. Bu pencereyi kapatabilirsiniz.</p>"; })
+            .catch((error) => { console.error("Hata:", error); document.getElementById('admin-approve-overlay').innerHTML = "<h1>❌ HATA!</h1><p>"+error.message+"</p>"; });
+        }
+
+        // --- ADMIN LOGIN (FIREBASE AUTH) ---
         function adminLogin() {
             const p = document.getElementById('admin-pass').value;
-            const email = "admin@maus.com"; // Konsolda oluşturduğun dummy email
-
+            const email = "admin@maus.com"; 
             firebase.auth().signInWithEmailAndPassword(email, p)
             .then((userCredential) => {
                 document.getElementById('admin-login-screen').style.display='none';
                 document.getElementById('admin-panel-screen').style.display='flex';
                 loadAdminEvents();
             })
-            .catch((error) => {
-                alert("Hatalı Şifre!");
-            });
+            .catch((error) => { alert("Hatalı Şifre!"); });
         }
 
         function addEventToFirebase() {
             const date = document.getElementById('new-evt-date').value;
             const title = document.getElementById('new-evt-title').value;
             const link = document.getElementById('new-evt-link').value;
-
             if(!date || !title) { alert("Tarih ve Başlık zorunludur."); return; }
-
-            db.collection("events").add({
-                date: date,
-                title: title,
-                link: link,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                alert("✅ Etkinlik Eklendi!");
-                document.getElementById('new-evt-date').value = "";
-                document.getElementById('new-evt-title').value = "";
-                document.getElementById('new-evt-link').value = "";
-                loadAdminEvents(); // Listeyi güncelle
-            });
+            db.collection("events").add({ date: date, title: title, link: link, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
+            .then(() => { alert("✅ Etkinlik Eklendi!"); document.getElementById('new-evt-date').value = ""; document.getElementById('new-evt-title').value = ""; document.getElementById('new-evt-link').value = ""; loadAdminEvents(); });
         }
 
         function deleteEventFromFirebase(docId) {
-            if(confirm("Bu etkinliği silmek istediğine emin misin?")) {
-                db.collection("events").doc(docId).delete().then(() => {
-                    loadAdminEvents();
-                });
-            }
+            if(confirm("Bu etkinliği silmek istediğine emin misin?")) { db.collection("events").doc(docId).delete().then(() => { loadAdminEvents(); }); }
         }
 
         function loadAdminEvents() {
@@ -328,71 +326,48 @@
             list.innerHTML = "Yükleniyor...";
             db.collection("events").orderBy("createdAt", "desc").get().then((snapshot) => {
                 let html = "";
-                snapshot.forEach((doc) => {
-                    const evt = doc.data();
-                    html += `<li>${evt.date} - ${evt.title} <button onclick="deleteEventFromFirebase('${doc.id}')" style="color:red; margin-left:10px;">[SİL]</button></li>`;
-                });
+                snapshot.forEach((doc) => { const evt = doc.data(); html += `<li>${evt.date} - ${evt.title} <button onclick="deleteEventFromFirebase('${doc.id}')" style="color:red; margin-left:10px;">[SİL]</button></li>`; });
                 list.innerHTML = html;
             });
         }
 
-        // --- ANA SAYFA ETKİNLİK ÇEKME ---
+        // --- PUBLIC DATA ---
         function loadFirebaseEvents() {
             const list = document.getElementById('content-events');
-            // Sıralama: Ekleme tarihine göre (En yeni en üstte)
             db.collection("events").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
                 let html = "";
                 if(snapshot.empty) { html = "<p>Şu an planlanan etkinlik yok.</p>"; }
-                snapshot.forEach((doc) => {
-                    const evt = doc.data();
-                    html += `<div class="event-item"><div class="event-info"><span class="event-date">${evt.date}</span><span>${evt.title}</span></div>${evt.link && evt.link!=='#' ? `<a href="${evt.link}" target="_blank" class="buy-btn">BİLET AL</a>` : ''}</div>`;
-                });
+                snapshot.forEach((doc) => { const evt = doc.data(); html += `<div class="event-item"><div class="event-info"><span class="event-date">${evt.date}</span><span>${evt.title}</span></div>${evt.link && evt.link!=='#' ? `<a href="${evt.link}" target="_blank" class="buy-btn">BİLET AL</a>` : ''}</div>`; });
                 list.innerHTML = html;
             });
         }
 
-        // --- GALERİ ÇEKME ---
         function loadFirebaseGallery() {
             const gal = document.getElementById('gallery-content');
             db.collection("gallery").where("status", "==", "approved").onSnapshot((snapshot) => {
                 let items = [];
                 snapshot.forEach((doc) => { items.push(doc.data()); });
-                
-                items.sort((a, b) => {
-                    if(!a.createdAt || !b.createdAt) return 0;
-                    return b.createdAt.seconds - a.createdAt.seconds;
-                });
-
+                items.sort((a, b) => { if(!a.createdAt || !b.createdAt) return 0; return b.createdAt.seconds - a.createdAt.seconds; });
                 let html = "";
                 if(items.length === 0) { html = "<p style='width:100%;text-align:center'>Henüz onaylanmış çizim yok.</p>"; }
-                
-                items.forEach((item) => {
-                    let displayName = item.name ? item.name : "Çizim";
-                    html += `<div class="win-file" onclick="openPhoto('${item.image}','${displayName}')"><img src="${item.image}" class="win-thumb"><div class="win-filename">${displayName}</div></div>`;
-                });
+                items.forEach((item) => { let displayName = item.name ? item.name : "Çizim"; html += `<div class="win-file" onclick="openPhoto('${item.image}','${displayName}')"><img src="${item.image}" class="win-thumb"><div class="win-filename">${displayName}</div></div>`; });
                 gal.innerHTML = html;
             });
         }
-
-        // Başlangıçta Yükle
         loadFirebaseEvents();
 
-        // --- ÇİZİM GÖNDERME ---
+        // --- PAINT ---
         window.processDrawing = () => {
             const painterName = document.getElementById('painter-name').value || "Anonim";
-            
             if(!confirm(`Çizimin "${painterName}" ismiyle onaya gönderilecek. Onaylıyor musun?`)) return;
-            
             const btn = document.querySelector('button[onclick="processDrawing()"]');
             const originalText = btn.innerText;
             btn.innerText = "GÖNDERİLİYOR..."; btn.disabled = true;
-
             pCanvas.toBlob((blob) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(blob); 
                 reader.onloadend = function() {
                     const base64data = reader.result;
-                    
                     const tempImg = new Image();
                     tempImg.src = base64data;
                     tempImg.onload = function() {
@@ -400,73 +375,33 @@
                         const ctx = tempCanvas.getContext('2d');
                         tempCanvas.width = pCanvas.width;
                         tempCanvas.height = pCanvas.height;
-                        
                         ctx.fillStyle = "#FFFFFF";
                         ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
                         ctx.drawImage(tempImg, 0, 0);
                         const optimizedBase64 = tempCanvas.toDataURL('image/jpeg', 0.5); 
-
-                        db.collection("gallery").add({
-                            image: optimizedBase64,
-                            status: "pending",
-                            name: painterName,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        }).then((docRef) => {
-                            
+                        db.collection("gallery").add({ image: optimizedBase64, status: "pending", name: painterName, createdAt: firebase.firestore.FieldValue.serverTimestamp() }).then((docRef) => {
                             const currentUrl = window.location.href.split('?')[0]; 
                             const approveLink = `${currentUrl}?approve=${docRef.id}`;
-                            
                             const msgText = `🎨 <b>Yeni Maus Paint Çizimi!</b>\n\n👤 <b>Çizen:</b> ${painterName}\n\nOnaylamak için tıkla:\n<a href="${approveLink}">👉 RESMİ ONAYLA</a>`;
-
                             const formData = new FormData();
                             formData.append("chat_id", TG_CHAT_ID);
                             formData.append("caption", msgText);
                             formData.append("photo", blob, `${painterName}_maus_cizim.png`);
                             formData.append("parse_mode", "HTML");
-
-                            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendPhoto`, {
-                                method: 'POST',
-                                body: formData
-                            }).then(() => {
+                            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData }).then(() => {
                                 alert("✅ Çizim yöneticiye gönderildi!");
                                 btn.innerText = "GÖNDERİLDİ";
                                 setTimeout(() => { btn.innerText = originalText; btn.disabled = false; clearPaint(); document.getElementById('painter-name').value=''; }, 2000);
                             });
-
-                        }).catch((error) => {
-                            console.error("Hata:", error);
-                            alert("❌ Kayıt başarısız.");
-                            btn.innerText = originalText; btn.disabled = false;
-                        });
+                        }).catch((error) => { console.error("Hata:", error); alert("❌ Kayıt başarısız."); btn.innerText = originalText; btn.disabled = false; });
                     };
                 }
             }, 'image/png');
         };
 
-        // --- MAİL ABONELİK ---
+        // --- OTHER FUNCS ---
         const subForm = document.getElementById('subForm');
-        subForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = subForm.querySelector('button');
-            const originalText = btn.innerText;
-            btn.innerText = "KAYDEDİLİYOR..."; btn.disabled = true;
-
-            const formData = new FormData(subForm);
-            fetch("https://formsubmit.co/ajax/hello@mausart.space", {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify(Object.fromEntries(formData))
-            })
-            .then(response => response.json())
-            .then(data => {
-                subForm.style.display = 'none';
-                document.getElementById('sub-success').style.display = 'block';
-            })
-            .catch(error => {
-                alert('Hata oluştu.');
-                btn.innerText = originalText; btn.disabled = false;
-            });
-        });
+        subForm.addEventListener('submit', function(e) { e.preventDefault(); const btn = subForm.querySelector('button'); const originalText = btn.innerText; btn.innerText = "KAYDEDİLİYOR..."; btn.disabled = true; const formData = new FormData(subForm); fetch("https://formsubmit.co/ajax/hello@mausart.space", { method: "POST", headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(Object.fromEntries(formData)) }).then(response => response.json()).then(data => { subForm.style.display = 'none'; document.getElementById('sub-success').style.display = 'block'; }).catch(error => { alert('Hata oluştu.'); btn.innerText = originalText; btn.disabled = false; }); });
 
         const MAUS_INFO = { about: `<p>Maus Art Space, sanatın herkes için erişilebilir olduğu bir platform yaratmayı hedefleyerek yola çıkan, Ankara’da bulunan bir sanat alanı.</p><br><p>Maus, yaratıcı üretimi teşvik etmek, sanatçıların ve sanat meraklılarının biraraya gelerek etkileşimde bulunabilmeleri amacıyla 14 Eylül 2024'te açıldı.</p>`, contact: `<p>📧 hello@mausart.space</p><p>📍 Güvenlik Caddesi 17a</p>` };
         document.getElementById('content-about').innerHTML = MAUS_INFO.about; document.getElementById('content-contact').innerHTML = MAUS_INFO.contact;
@@ -484,12 +419,7 @@
 
         const pCanvas = document.getElementById('paintCanvas'); const pCtx = pCanvas.getContext('2d');
         let isDrawing=false, lastX=0, lastY=0, pColor='#000', pAlpha=1, isEraser=false;
-        function resizePaintCanvas() { 
-            const containerWidth = pCanvas.parentElement.clientWidth;
-            pCanvas.width = containerWidth; 
-            pCanvas.height = containerWidth; 
-            updateContext(); 
-        }
+        function resizePaintCanvas() { const containerWidth = pCanvas.parentElement.clientWidth; pCanvas.width = containerWidth; pCanvas.height = containerWidth; updateContext(); }
         function updateContext() { pCtx.lineWidth = isEraser?20:4; pCtx.lineCap='round'; pCtx.strokeStyle = isEraser?'#ffffff':pColor; pCtx.globalAlpha = isEraser?1:pAlpha; }
         window.setColor = (c,b) => { isEraser=false; pColor=c; document.querySelectorAll('.color-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); updateContext(); }
         window.setOpacity = (a,b) => { isEraser=false; pAlpha=a; document.querySelectorAll('.alpha-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); updateContext(); }
@@ -512,9 +442,7 @@
         function closeDinoAndReset() { closeDino(); systemReset(); }
         function closeDino() { clearInterval(dInt); window.removeEventListener('keydown',dJump); dCanvas.removeEventListener('touchstart',dJump); dCanvas.removeEventListener('mousedown',dJump); document.getElementById('dino-screen').style.display='none'; }
         function dJump(e) { if((e.code==='Space'||e.type==='touchstart'||e.type==='mousedown')) { e.preventDefault(); if(!dGameRunning) { dGameRunning = true; dSpd=6; dSc=0; dObs=[]; } else if(!dPly.jump) { dPly.dy=-15; dPly.jump=true; } } }
-        function dLoop() { if(!dGameRunning) return; dPly.dy+=0.9; dPly.y+=dPly.dy; if(dPly.y>dPly.g){dPly.y=dPly.g;dPly.jump=false;} let canSpawn = dObs.length === 0 || dObs[dObs.length-1].x < 450; let rate = 0.015 + (dSc * 0.0001); if(canSpawn && Math.random() < rate) { let h = 30 + Math.random()*30; dObs.push({x:600,w:25,h:h}); } dObs.forEach(o=>o.x-=dSpd); dObs=dObs.filter(o=>o.x>-50); dObs.forEach(o=>{ if(dPly.x<o.x+o.w && dPly.x+dPly.w>o.x && dPly.y<240 && dPly.y+dPly.h>240-o.h){ dGameRunning=false; dCtx.fillStyle='#fff'; dCtx.font="30px monospace"; dCtx.textAlign="center"; dCtx.fillText("OYUN BİTTİ! SKOR: "+Math.floor(dSc), 300, 150); dCtx.font="20px monospace"; dCtx.fillText("Tekrar oynamak için TIKLA", 300, 180); }}); dSc+=0.15; dSpd = 6 + (dSc * 0.04); dCtx.fillStyle='#0000aa'; dCtx.fillRect(0,0,600,300); dCtx.fillStyle='#fff'; dCtx.fillRect(0,230,600,2); 
-        dCtx.drawImage(dinoImg, dPly.x, dPly.y, dPly.w, dPly.h); 
-        dObs.forEach(o=>dCtx.fillRect(o.x,230-o.h,o.w,o.h)); dCtx.font="20px monospace"; dCtx.textAlign="left"; dCtx.fillText("SKOR: "+Math.floor(dSc),20,30); }
+        function dLoop() { if(!dGameRunning) return; dPly.dy+=0.9; dPly.y+=dPly.dy; if(dPly.y>dPly.g){dPly.y=dPly.g;dPly.jump=false;} let canSpawn = dObs.length === 0 || dObs[dObs.length-1].x < 450; let rate = 0.015 + (dSc * 0.0001); if(canSpawn && Math.random() < rate) { let h = 30 + Math.random()*30; dObs.push({x:600,w:25,h:h}); } dObs.forEach(o=>o.x-=dSpd); dObs=dObs.filter(o=>o.x>-50); dObs.forEach(o=>{ if(dPly.x<o.x+o.w && dPly.x+dPly.w>o.x && dPly.y<240 && dPly.y+dPly.h>240-o.h){ dGameRunning=false; dCtx.fillStyle='#fff'; dCtx.font="30px monospace"; dCtx.textAlign="center"; dCtx.fillText("OYUN BİTTİ! SKOR: "+Math.floor(dSc), 300, 150); dCtx.font="20px monospace"; dCtx.fillText("Tekrar oynamak için TIKLA", 300, 180); }}); dSc+=0.15; dSpd = 6 + (dSc * 0.04); dCtx.fillStyle='#0000aa'; dCtx.fillRect(0,0,600,300); dCtx.fillStyle='#fff'; dCtx.fillRect(0,230,600,2); dCtx.drawImage(dinoImg, dPly.x, dPly.y, dPly.w, dPly.h); dObs.forEach(o=>dCtx.fillRect(o.x,230-o.h,o.w,o.h)); dCtx.font="20px monospace"; dCtx.textAlign="left"; dCtx.fillText("SKOR: "+Math.floor(dSc),20,30); }
         window.addEventListener('resize', () => { if(document.getElementById('window-paint').classList.contains('active')) resizePaintCanvas(); });
     </script>
 </body>
