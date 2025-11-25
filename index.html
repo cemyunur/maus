@@ -44,6 +44,22 @@
         .crt-anim { animation: turn-off 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
         @keyframes turn-off { 0% { transform: scale(1, 1.3); opacity: 1; } 100% { transform: scale(0, 0.001); opacity: 0; } }
         
+        /* YENİ: REBOOT / BIOS EKRANI */
+        #boot-screen {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; color: #c0c0c0;
+            z-index: 100000;
+            padding: 20px;
+            font-family: 'VT323', monospace;
+            font-size: 1.2rem;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
+        }
+        .cursor-blink { animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
         /* Desktop & Windows */
         #desktop { padding: 20px; display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-start; height: 85vh; gap: 10px; margin-top: 10px; }
         .desktop-icon { display: flex; flex-direction: column; align-items: center; width: 90px; height: 90px; cursor: pointer; text-align: center; color: var(--win-white); z-index: 1; margin-bottom: 5px; }
@@ -131,6 +147,15 @@
 </head>
 <body>
 
+    <div id="boot-screen">
+        <div style="margin-bottom:20px;">MausOS BIOS v2.5 (c) 2025</div>
+        <div>CPU: Maus-98 @ 300MHz</div>
+        <div>Memory Test: 640K OK</div>
+        <br>
+        <div id="boot-log"></div>
+        <div class="cursor-blink" style="margin-top:10px;">_</div>
+    </div>
+
     <div id="admin-approve-overlay">
         <div>ONAYLANIYOR...</div>
         <div style="font-size:1rem; margin-top:20px;">Lütfen bekleyin...</div>
@@ -183,7 +208,11 @@
             <div class="menu-item" onclick="openWindow('archive')"><img src="https://win98icons.alexmeub.com/icons/png/directory_closed-4.png" style="width:24px;margin-right:10px;"> Geçmiş Sergiler</div>
             <div class="menu-item" onclick="triggerSurprise()" style="color:#ff0000; font-weight:bold;"><img src="https://win98icons.alexmeub.com/icons/png/msg_error-0.png" style="width:24px;margin-right:10px;"> BASMA!</div>
             <div class="menu-divider"></div>
-            <div class="menu-item" onclick="setRandomBackground()"><img src="https://win98icons.alexmeub.com/icons/png/settings_gear-4.png" style="width:24px;margin-right:10px;"> 🎲 Rastgele Arkaplan</div>
+            
+            <div class="menu-item" onclick="setRandomBackground()">
+                <img src="https://win98icons.alexmeub.com/icons/png/settings_gear-4.png" style="width:24px;margin-right:10px;"> 🎲 Rastgele Arkaplan
+            </div>
+
             <div class="menu-divider"></div>
             <div class="menu-item" onclick="startDinoGame()"><img src="https://win98icons.alexmeub.com/icons/png/msg_warning-0.png" style="width:24px;margin-right:10px;"> Sistem Hatası</div>
             <div class="menu-divider"></div>
@@ -208,7 +237,7 @@
     <div class="window-container" id="window-contact"><div class="title-bar"><span>İletişim</span><div class="close-btn" onclick="closeWindow('contact')">X</div></div><div class="window-content" id="content-contact"></div></div>
     <div class="window-container" id="window-map"><div class="title-bar"><span>Maus Maps</span><div class="close-btn" onclick="closeWindow('map')">X</div></div><div class="window-content" style="padding:0; display:flex; flex-direction:column; background:#eef;"><img src="map.jpg" style="width:100%; height:auto; max-height:300px; object-fit:cover; border-bottom:2px solid #888;" alt="Harita" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div style=\'padding:20px;text-align:center\'>map.jpg yüklenemedi</div>')"><div style="padding:15px; text-align:center; background:#fff;"><p style="font-size:1.5rem; color:#008000; font-weight:bold; margin:0;">MAUS ART SPACE</p><p style="margin-top:5px;">Güvenlik Caddesi 17a, Ankara</p></div></div></div>
     
-    <div class="window-container" id="window-press"><div class="title-bar"><span>Basın Odası</span><div class="close-btn" onclick="closeWindow('press')">X</div></div><div class="window-content"><h3>Maus Art Space Basında</h3><ul><li><strong>📰 Sanat Dünyası:</strong> "Ankara'nın Yeni Soluğu" - <a href="https://aposto.com/s/ankaranin-yenisi-maus-art-space" target="_blank">Oku</a></li><li><strong>📰 Artist Safe Zone:</strong> "Çember Resim Vakti" - <a href="https://www.artistsafezone.com/post/%C3%A7ember-resim-vakti-maus-art-space-in-at%C3%B6lyesinde-bize-e%C5%9Flik-edin" target="_blank">Oku</a></li><li><strong>📰 Gazete Duvar:</strong> "Ankara'da kendi halinde bir vaha" - <a href="https://www.gazeteduvar.com.tr/maus-art-space-ankarada-kendi-halinde-bir-vaha-haber-1757202" target="_blank">Oku</a></li><li><strong>📺 Instagram:</strong> "Bizimle Tanışın" - <a href="https://www.instagram.com/p/DF5NufRtX8S/" target="_blank">İzle</a></li></ul></div></div>
+    <div class="window-container" id="window-press"><div class="title-bar"><span>basın </span><div class="close-btn" onclick="closeWindow('press')">X</div></div><div class="window-content"><h3>Maus Art Space Basında</h3><ul><li><strong>📰 Aposto:</strong> "Ankara'nın Yeni Soluğu" - <a href="https://aposto.com/s/ankaranin-yenisi-maus-art-space" target="_blank">Oku</a></li><li><strong>📰 Artist Safe Zone:</strong> "Çember Resim Vakti" - <a href="https://www.artistsafezone.com/post/%C3%A7ember-resim-vakti-maus-art-space-in-at%C3%B6lyesinde-bize-e%C5%9Flik-edin" target="_blank">Oku</a></li><li><strong>📰 Gazete Duvar:</strong> "Ankara'da kendi halinde bir vaha" - <a href="https://www.gazeteduvar.com.tr/maus-art-space-ankarada-kendi-halinde-bir-vaha-haber-1757202" target="_blank">Oku</a></li><li><strong>📺 Instagram:</strong> "nothenews-az ünlü müzik fest!" - <a href="https://www.instagram.com/p/DF5NufRtX8S/" target="_blank">İzle</a></li></ul></div></div>
     
     <div class="window-container" id="window-archive"><div class="title-bar"><span>Geçmiş Sergiler</span><div class="close-btn" onclick="closeWindow('archive')">X</div></div><div class="window-content"><ul class="archive-list"><li><span class="archive-date">14 Eylül 2024</span> Fare Açılış Sergisi</li><li><span class="archive-date">27 Aralık 2024</span> Transfer</li><li><span class="archive-date">11 Ocak 2025</span> Hatice Karakaş - Evdekiler</li><li><span class="archive-date">8 Şubat 2025</span> Sinan Hasar - Kafa Kağıdı</li><li><span class="archive-date">22 Şubat 2025</span> 9 Sergisi</li><li><span class="archive-date">11 Nisan 2025</span> Evvela Sergisi</li><li><span class="archive-date">25 Nisan 2025</span> Ev Ankara - Kapı Sergisi</li><li><span class="archive-date">10 Mayıs 2025</span> Eda Gizem Uğur - Yatırım Tavsiyesi Değildir</li><li><span class="archive-date">31 Mayıs 2025</span> Ahmet Mert Hasret - Artık Hep Birlikte Misafiriz</li><li><span class="archive-date">21 Haziran 2025</span> Ece Kaşkır & Ecem Beşir - Uyanığın Gölgesi</li><li><span class="archive-date">6 Eylül 2025</span> Fare II Sergisi</li><li><span class="archive-date">19 Eylül 2025</span> Bi'yerde Görmüştüm</li><li><span class="archive-date">10 Ekim 2025</span> Imgelem/r ve Yansımalar</li><li><span class="archive-date">31 Ekim 2025</span> Furkan Cin & Melih Uçmaz - Vahşi, Kötü ve Çirkin</li></ul></div></div>
     
@@ -248,7 +277,7 @@
 
     <div class="window-container" id="window-viewer" style="height:80vh; width:90%; max-width:800px;"><div class="title-bar"><span id="viewer-title">Resim</span><div class="close-btn" onclick="closeViewer()">X</div></div><div class="window-content" style="padding:0; display:flex; background:#fff;"><div class="img-display-area"><img id="viewer-img" src=""></div><div class="img-controls"><button class="retro-btn" onclick="closeViewer()">RESMİ KAPAT</button></div></div></div>
 
-    <div id="clippy-container" class="clippy-float" style="display:none; position: fixed; bottom: 20px; right: 20px; z-index: 10000; flex-direction: column; align-items: flex-end;">
+    <div id="clippy-container" class="clippy-float" style="display:none; position: fixed; bottom: 70px; right: 30px; z-index: 10000; flex-direction: column; align-items: flex-end;">
         
         <div id="clippy-bubble" style="background: #ffffe1; border: 1px solid #000; border-radius: 5px; padding: 10px; margin-bottom: 5px; font-family: Tahoma, sans-serif; font-size: 12px; color: #000; box-shadow: 4px 4px 0px rgba(0,0,0,0.2); max-width: 200px; position: relative; display:none;">
             <span id="clippy-text">Selam! Ben Maus.</span>
@@ -533,7 +562,47 @@
         function toggleStart() { const m = document.getElementById('start-menu'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; document.querySelector('.start-btn').classList.toggle('active'); }
         document.getElementById('desktop').addEventListener('click', () => { document.getElementById('start-menu').style.display = 'none'; document.querySelector('.start-btn').classList.remove('active'); });
         function openLink(url) { window.open(url, '_blank'); }
-        function systemReset() { document.getElementById('crt-overlay').style.display='block'; document.getElementById('crt-overlay').classList.add('crt-anim'); setTimeout(()=>location.reload(), 600); }
+        
+        // SİSTEM YENİDEN BAŞLATMA (REBOOT EKRANI DAHİL)
+        function systemReset() { 
+            // 1. CRT Animasyonunu Başlat
+            document.getElementById('crt-overlay').style.display='block'; 
+            document.getElementById('crt-overlay').classList.add('crt-anim'); 
+            
+            // 2. 600ms Sonra Siyah Boot Ekranını Göster
+            setTimeout(() => {
+                document.getElementById('boot-screen').style.display = 'flex';
+                runBootSequence();
+            }, 600);
+        }
+
+        function runBootSequence() {
+            const log = document.getElementById('boot-log');
+            const lines = [
+                "Loading system...",
+                "Checking art galleries...",
+                "Initializing paint modules...",
+                "Maus Art Space is ready."
+            ];
+            let i = 0;
+            // Yazıların tek tek gelmesi
+            const interval = setInterval(() => {
+                if (i < lines.length) {
+                    log.innerHTML += "<div>" + lines[i] + "</div>";
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    // Her şey bitince ekranı temizle (SOFT REBOOT - SAYFAYI YENİLEMEZ)
+                    setTimeout(() => {
+                        document.getElementById('boot-screen').style.display = 'none';
+                        document.getElementById('crt-overlay').style.display = 'none';
+                        document.getElementById('crt-overlay').classList.remove('crt-anim');
+                        closeAllWindows(); // Masaüstünü temizle
+                    }, 500); 
+                }
+            }, 600); 
+        }
+
         function closeAllWindows() { document.querySelectorAll('.window-container').forEach(w => { if(w.id !== 'window-viewer') w.classList.remove('active'); }); closeSurprise(); closeDino(); }
         function openWindow(id) { closeAllWindows(); const w = document.getElementById('window-'+id); if(w) { w.classList.add('active'); w.style.zIndex = 100; if(id==='paint') setTimeout(resizePaintCanvas, 50); if(id==='gallery') loadFirebaseGallery(); if(id==='events') loadFirebaseEvents(); if(id==='admin') loadAdminPanel(); } }
         function closeWindow(id) { document.getElementById('window-'+id).classList.remove('active'); }
@@ -577,13 +646,13 @@
 
         // CLIPPY LOGIC
         const clippyMsgs = [
-            "Görünüşe göre sanat seviyorsun! 🎨",
-            "Paint'te bir şeyler çizmek ister misin?",
-            "Maus Art Space Ankara'nın en havalı yeri!",
-            "Benim adım Ataç, senin adın ne?",
-            "Dinozor oyununda rekorun kaç?",
-            "Beni dürtüp durma gıdıklanıyorum!",
-            "Arkaplanı değiştirmek için Başlat'a bak."
+          "atölyelerimiz gerçekten var",
+          "paint'te bir şeyler çizip kaydet!", 
+          "naber?", 
+          "atölye anıları normalde çok daha fazla:(",
+          "bize mail atmaktan veya instagramdan ulaşmaktan hiç çekinme!",
+          "shopier'den ürünlerimize bakabilirsin",
+          "arkaplanı değiştirmek için başlat'a bak."
         ];
         const totalGifs = 9; 
         function changeClippyAction() {
