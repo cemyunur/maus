@@ -100,25 +100,29 @@
         .close-btn:active { box-shadow: var(--border-inset); }
         .window-content { padding: 15px; overflow-y: auto; flex-grow: 1; font-size: 1.2rem; line-height: 1.4; }
         
-        /* Paint & Gallery - DÜZELTİLDİ: Yükseklik ve Flex Ayarları */
+        /* Paint & Gallery - SCROLL SORUNU ÇÖZÜLDÜ */
         #window-paint { 
             width: 95vw; 
-            height: 80vh; /* Yüksekliği sabitle */
+            height: auto; 
+            max-height: 80vh; /* Pencere boyutu sabit */
             max-width: 600px; 
+            display: flex;
+            flex-direction: column;
         }
         #paint-window .window-content { 
             display: flex; 
             flex-direction: column; 
             gap: 8px; 
             padding: 4px; 
-            overflow: hidden; 
+            overflow: hidden; /* İçerik taşmasın */
             background: var(--win-gray); 
             height: 100%; 
             box-sizing: border-box; 
         }
         .canvas-frame { 
-            flex: 1; /* Kalan tüm boşluğu doldur */
+            flex: 1; /* Tuval kalan tüm boşluğu doldursun */
             width: 100%;
+            min-height: 0; /* Küçülmeye izin ver */
             border: 2px solid; 
             border-color: #808080 #ffffff #ffffff #808080; 
             background: white; 
@@ -126,6 +130,7 @@
             touch-action: none; 
         }
         #paintCanvas { width: 100%; height: 100%; display: block; }
+        
         .paint-toolbar { 
             display: flex; 
             flex-wrap: wrap; 
@@ -135,7 +140,7 @@
             padding: 4px; 
             background: #c0c0c0; 
             border-top: 1px solid #fff; 
-            flex-shrink: 0; /* Toolbar küçülmesin */
+            flex-shrink: 0; /* Toolbar asla küçülmesin */
         }
         .tool-group { display: flex; gap: 4px; align-items: center; }
         
@@ -534,7 +539,7 @@
         document.getElementById('desktop').addEventListener('click', () => { document.getElementById('start-menu').style.display = 'none'; document.querySelector('.start-btn').classList.remove('active'); });
         function openLink(url) { window.open(url, '_blank'); }
         function systemReset() { document.getElementById('crt-overlay').style.display='block'; document.getElementById('crt-overlay').classList.add('crt-anim'); setTimeout(()=> { document.getElementById('boot-screen').style.display = 'flex'; runBootSequence(); }, 600); }
-        function runBootSequence() { const log = document.getElementById('boot-log'); const lines = [ "Loading system...", "Checking art galleries...", "Initializing paint modules...", "Maus Art Space is ready." ]; let i = 0; const interval = setInterval(() => { if (i < lines.length) { log.innerHTML += "<div>" + lines[i] + "</div>"; i++; } else { clearInterval(interval); setTimeout(() => { document.getElementById('boot-screen').style.display = 'none'; document.getElementById('crt-overlay').style.display = 'none'; document.getElementById('crt-overlay').classList.remove('crt-anim'); closeAllWindows(); }, 500); } }, 600); }
+        function runBootSequence() { const log = document.getElementById('boot-log'); const lines = [ "Loading system...", "Dandik bi takım yalandan yazılar...", "Initializing paint modules...", "maus is ready." ]; let i = 0; const interval = setInterval(() => { if (i < lines.length) { log.innerHTML += "<div>" + lines[i] + "</div>"; i++; } else { clearInterval(interval); setTimeout(() => { document.getElementById('boot-screen').style.display = 'none'; document.getElementById('crt-overlay').style.display = 'none'; document.getElementById('crt-overlay').classList.remove('crt-anim'); closeAllWindows(); }, 500); } }, 600); }
         function closeAllWindows() { document.querySelectorAll('.window-container').forEach(w => { if(w.id !== 'window-viewer') w.classList.remove('active'); }); closeSurprise(); closeDino(); }
         function openWindow(id) { closeAllWindows(); const w = document.getElementById('window-'+id); if(w) { w.classList.add('active'); w.style.zIndex = 100; if(id==='paint') setTimeout(resizePaintCanvas, 50); if(id==='gallery') loadFirebaseGallery(); if(id==='events') loadFirebaseEvents(); if(id==='admin') loadAdminPanel(); } }
         function closeWindow(id) { document.getElementById('window-'+id).classList.remove('active'); }
@@ -543,8 +548,19 @@
 
         const pCanvas = document.getElementById('paintCanvas'); const pCtx = pCanvas.getContext('2d');
         let isDrawing=false, lastX=0, lastY=0, pColor='#000', pAlpha=1, isEraser=false;
-        function resizePaintCanvas() { const containerWidth = pCanvas.parentElement.clientWidth; pCanvas.width = containerWidth; pCanvas.height = containerWidth; updateContext(); }
-        function updateContext() { pCtx.lineWidth = isEraser?20:4; pCtx.lineCap='round'; pCtx.strokeStyle = isEraser?'#ffffff':pColor; pCtx.globalAlpha = isEraser?1:pAlpha; }
+        function resizePaintCanvas() { 
+            const containerWidth = pCanvas.parentElement.clientWidth; 
+            pCanvas.width = containerWidth; 
+            pCanvas.height = containerWidth; 
+            updateContext(); 
+        }
+        function updateContext() { 
+            pCtx.lineWidth = isEraser?20:4; 
+            // FIX: Transparent mode uses 'butt' to avoid dark dots
+            pCtx.lineCap = (pAlpha < 1) ? 'butt' : 'round'; 
+            pCtx.strokeStyle = isEraser?'#ffffff':pColor; 
+            pCtx.globalAlpha = isEraser?1:pAlpha; 
+        }
         window.setColor = (c,b) => { isEraser=false; pColor=c; document.querySelectorAll('.color-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); updateContext(); }
         window.setOpacity = (a,b) => { isEraser=false; pAlpha=a; document.querySelectorAll('.alpha-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); updateContext(); }
         window.setEraser = () => { isEraser=true; updateContext(); }
@@ -571,6 +587,6 @@
         window.addEventListener('resize', () => { if(document.getElementById('window-paint').classList.contains('active')) resizePaintCanvas(); });
         
         const clippyMsgs = ["atölyelerimiz gerçekten var", "paint'te bir şeyler çizip kaydet!", "naber?", "atölye anıları normalde çok daha fazla:(", "bize mail atmaktan veya instagramdan ulaşmaktan hiç çekinme!", "shopier'den ürünlerimize bakabilirsin", "arkaplanı değiştirmek için başlat'a bak."]; const totalGifs = 9; function changeClippyAction() { const img = document.getElementById('clippy-img'); const randomNum = Math.floor(Math.random() * totalGifs) + 1; img.src = `clippy${randomNum}.gif`; } function startClippy() { const c = document.getElementById('clippy-container'); const b = document.getElementById('clippy-bubble'); setTimeout(() => { c.style.display = 'flex'; changeClippyAction(); setTimeout(() => { b.style.display = 'block'; }, 1000); setInterval(changeClippyAction, 8000); }, 3000); } function closeClippy(e) { e.stopPropagation(); document.getElementById('clippy-container').style.display = 'none'; } function pokeClippy() { const c = document.getElementById('clippy-container'); const txt = document.getElementById('clippy-text'); const img = document.getElementById('clippy-img'); c.classList.remove('clippy-float'); img.classList.add('clippy-shake'); changeClippyAction(); const msg = clippyMsgs[Math.floor(Math.random() * clippyMsgs.length)]; txt.innerText = msg; document.getElementById('clippy-bubble').style.display = 'block'; setTimeout(() => { img.classList.remove('clippy-shake'); c.classList.add('clippy-float'); }, 300); } startClippy();
-    </script>
+    </script>
 </body>
 </html>
