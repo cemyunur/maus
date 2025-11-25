@@ -68,7 +68,21 @@
         #taskbar { position: fixed; bottom: 0; left: 0; width: 100%; height: auto; min-height: 40px; background-color: var(--win-gray); box-shadow: var(--border-outset); display: flex; justify-content: space-between; align-items: center; padding: 4px 4px calc(4px + env(safe-area-inset-bottom)) 4px; z-index: 9999; }
         .start-btn { display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 10px; background-color: var(--win-gray); box-shadow: var(--border-outset); font-weight: bold; font-size: 1.2rem; cursor: pointer; }
         .start-btn.active { box-shadow: var(--border-inset); background: #ddd; }
-        #clock { background-color: var(--win-gray); box-shadow: var(--border-inset); padding: 5px 15px; font-size: 1.1rem; margin-right: 5px; }
+        
+        /* SAAT VE DİL BUTONU ALANI */
+        .taskbar-right { display: flex; gap: 5px; align-items: center; }
+        #clock { background-color: var(--win-gray); box-shadow: var(--border-inset); padding: 5px 10px; font-size: 1.1rem; }
+        #lang-btn { 
+            background-color: var(--win-gray); 
+            box-shadow: var(--border-outset); 
+            padding: 5px 8px; 
+            font-size: 1.1rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            color: blue;
+        }
+        #lang-btn:active { box-shadow: var(--border-inset); }
+
         #start-menu { display: none; position: fixed; left: 2px; width: 260px; background-color: var(--win-gray); box-shadow: var(--border-outset); z-index: 10000; flex-direction: row; bottom: calc(44px + env(safe-area-inset-bottom)); }
         .start-sidebar { width: 40px; background: linear-gradient(to bottom, #000080, #1084d0); color: white; writing-mode: vertical-rl; transform: rotate(180deg); text-align: left; padding: 10px; font-size: 1.5rem; font-weight: bold; display: flex; align-items: center; letter-spacing: 5px; }
         .start-items { flex-grow: 1; display: flex; flex-direction: column; padding: 2px; }
@@ -93,7 +107,19 @@
         #paintCanvas { width: 100%; height: 100%; display: block; }
         .paint-toolbar { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; padding: 4px; background: #c0c0c0; border-top: 1px solid #fff; }
         .tool-group { display: flex; gap: 4px; align-items: center; }
-        .paint-name-input { width: 100px; font-family: inherit; padding: 2px; border: 2px solid #888; border-style: inset; }
+        
+        /* PAINT İSİM KUTUSU DÜZENLEMESİ (DAHA BÜYÜK VE BELİRGİN) */
+        .paint-name-input { 
+            width: 140px; 
+            height: 26px;
+            font-family: inherit; 
+            padding: 4px; 
+            border: 2px inset #fff; /* İçeri göçük efekt */
+            background: #fff;
+            font-size: 1.1rem;
+            color: #000;
+        }
+
         .color-btn { width: 24px; height: 24px; border: 2px solid; border-color: #ffffff #808080 #808080 #ffffff; cursor: pointer; }
         .color-btn.active { border-color: #808080 #ffffff #ffffff #808080; }
         .alpha-btn { font-size: 1rem; background: var(--win-gray); box-shadow: var(--border-outset); border: none; cursor: pointer; }
@@ -146,7 +172,7 @@
 <body>
 
     <div id="boot-screen">
-        <div style="margin-bottom:20px;">MausOS BIOS v2.6 (c) 2025</div>
+        <div style="margin-bottom:20px;">MausOS BIOS v3.1 (c) 2025</div>
         <div>CPU: Maus-98 @ 300MHz</div>
         <div>Memory Test: 640K OK</div>
         <br>
@@ -183,66 +209,69 @@
     </div>
 
     <div id="desktop">
-        <div class="desktop-icon" onclick="openWindow('about')"><img src="https://win98icons.alexmeub.com/icons/png/computer_explorer-4.png"><span>Biz Kimiz</span></div>
-        <div class="desktop-icon" onclick="openWindow('events')"><img src="https://win98icons.alexmeub.com/icons/png/calendar-1.png"><span>Etkinlikler</span></div>
-        <div class="desktop-icon" onclick="openWindow('subscribe')"><img src="https://win98icons.alexmeub.com/icons/png/modem-2.png"><span>Mail Abonelik</span></div>
-        <div class="desktop-icon" onclick="openWindow('contact')"><img src="https://win98icons.alexmeub.com/icons/png/envelope_closed-0.png"><span>İletişim</span></div>
+        <div class="desktop-icon" onclick="openWindow('about')"><img src="https://win98icons.alexmeub.com/icons/png/computer_explorer-4.png"><span id="lbl-about">Biz Kimiz</span></div>
+        <div class="desktop-icon" onclick="openWindow('events')"><img src="https://win98icons.alexmeub.com/icons/png/calendar-1.png"><span id="lbl-events">Etkinlikler</span></div>
+        <div class="desktop-icon" onclick="openWindow('subscribe')"><img src="https://win98icons.alexmeub.com/icons/png/modem-2.png"><span id="lbl-sub">Mail Abonelik</span></div>
+        <div class="desktop-icon" onclick="openWindow('contact')"><img src="https://win98icons.alexmeub.com/icons/png/envelope_closed-0.png"><span id="lbl-contact">İletişim</span></div>
         <div class="desktop-icon" onclick="openLink('https://instagram.com/mausartspace')"><img src="https://win98icons.alexmeub.com/icons/png/camera-2.png"><span>Instagram</span></div>
-        <div class="desktop-icon" onclick="openWindow('map')"><img src="https://win98icons.alexmeub.com/icons/png/world-3.png"><span>Harita</span></div>
-        <div class="desktop-icon" onclick="openWindow('media')"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png"><span>Atölye Anıları</span></div>
-        <div class="desktop-icon" onclick="openWindow('gallery')"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png"><span>Paint Galerisi</span></div>
+        <div class="desktop-icon" onclick="openWindow('map')"><img src="https://win98icons.alexmeub.com/icons/png/world-3.png"><span id="lbl-map">Harita</span></div>
+        <div class="desktop-icon" onclick="openWindow('media')"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png"><span id="lbl-memories">Atölye Anıları</span></div>
+        <div class="desktop-icon" onclick="openWindow('gallery')"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png"><span id="lbl-gallery">Paint Galerisi</span></div>
         <div class="desktop-icon" onclick="openWindow('paint')"><img src="https://win98icons.alexmeub.com/icons/png/paint_file-2.png"><span>Maus Paint</span></div>
-        <div class="desktop-icon" onclick="openLink('https://www.shopier.com/maus')"><img src="https://win98icons.alexmeub.com/icons/png/briefcase-2.png"><span>Mağaza</span></div>
+        <div class="desktop-icon" onclick="openLink('https://www.shopier.com/maus')"><img src="https://win98icons.alexmeub.com/icons/png/briefcase-2.png"><span id="lbl-shop">Mağaza</span></div>
     </div>
 
     <div id="taskbar">
-        <div class="start-btn" onclick="toggleStart()"><img src="https://win98icons.alexmeub.com/icons/png/windows-0.png"> Başlat</div>
-        <div id="clock">12:00</div>
+        <div class="start-btn" onclick="toggleStart()"><img src="https://win98icons.alexmeub.com/icons/png/windows-0.png"> <span id="lbl-start">Başlat</span></div>
+        <div class="taskbar-right">
+            <div id="lang-btn" onclick="toggleLanguage()">TR</div>
+            <div id="clock">12:00</div>
+        </div>
     </div>
 
     <div id="start-menu">
         <div class="start-sidebar">MAUS 98</div>
         <div class="start-items">
-            <div class="menu-item" onclick="openWindow('press')"><img src="https://win98icons.alexmeub.com/icons/png/calendar-1.png" style="width:24px;margin-right:10px;"> Basın</div>
-            <div class="menu-item" onclick="openWindow('archive')"><img src="https://win98icons.alexmeub.com/icons/png/directory_closed-4.png" style="width:24px;margin-right:10px;"> Geçmiş Sergiler</div>
-            <div class="menu-item" onclick="triggerSurprise()" style="color:#ff0000; font-weight:bold;"><img src="https://win98icons.alexmeub.com/icons/png/msg_error-0.png" style="width:24px;margin-right:10px;"> BASMA!</div>
+            <div class="menu-item" onclick="openWindow('press')"><img src="https://win98icons.alexmeub.com/icons/png/calendar-1.png" style="width:24px;margin-right:10px;"> <span id="lbl-press">basın</span></div>
+            <div class="menu-item" onclick="openWindow('archive')"><img src="https://win98icons.alexmeub.com/icons/png/directory_closed-4.png" style="width:24px;margin-right:10px;"> <span id="lbl-archive">Geçmiş Sergiler</span></div>
+            <div class="menu-item" onclick="triggerSurprise()" style="color:#ff0000; font-weight:bold;"><img src="https://win98icons.alexmeub.com/icons/png/msg_error-0.png" style="width:24px;margin-right:10px;"> <span id="lbl-dontclick">BASMA!</span></div>
             <div class="menu-divider"></div>
             <div class="menu-item" onclick="setRandomBackground()">
-                <img src="https://win98icons.alexmeub.com/icons/png/settings_gear-4.png" style="width:24px;margin-right:10px;"> 🎲 Rastgele Arkaplan
+                <img src="https://win98icons.alexmeub.com/icons/png/settings_gear-4.png" style="width:24px;margin-right:10px;"> <span id="lbl-randombg">🎲 Rastgele Arkaplan</span>
             </div>
             <div class="menu-divider"></div>
-            <div class="menu-item" onclick="startDinoGame()"><img src="https://win98icons.alexmeub.com/icons/png/msg_warning-0.png" style="width:24px;margin-right:10px;"> Sistem Hatası</div>
+            <div class="menu-item" onclick="startDinoGame()"><img src="https://win98icons.alexmeub.com/icons/png/msg_warning-0.png" style="width:24px;margin-right:10px;"> <span id="lbl-syserror">Sistem Hatası</span></div>
             <div class="menu-divider"></div>
-            <div class="menu-item" onclick="systemReset()"><img src="https://win98icons.alexmeub.com/icons/png/shut_down_cool-4.png" style="width:24px;margin-right:10px;"> Bilgisayarı Kapat</div>
+            <div class="menu-item" onclick="systemReset()"><img src="https://win98icons.alexmeub.com/icons/png/shut_down_cool-4.png" style="width:24px;margin-right:10px;"> <span id="lbl-shutdown">Bilgisayarı Kapat</span></div>
         </div>
     </div>
 
-    <div class="window-container" id="window-about"><div class="title-bar"><span>Biz Kimiz.txt</span><div class="close-btn" onclick="closeWindow('about')">X</div></div><div class="window-content" id="content-about"></div></div>
-    <div class="window-container" id="window-events"><div class="title-bar"><span>Etkinlik Takvimi</span><div class="close-btn" onclick="closeWindow('events')">X</div></div><div class="window-content" id="content-events">Yükleniyor...</div></div>
+    <div class="window-container" id="window-about"><div class="title-bar"><span id="title-about">Biz Kimiz.txt</span><div class="close-btn" onclick="closeWindow('about')">X</div></div><div class="window-content" id="content-about"></div></div>
+    <div class="window-container" id="window-events"><div class="title-bar"><span id="title-events">Etkinlik Takvimi</span><div class="close-btn" onclick="closeWindow('events')">X</div></div><div class="window-content" id="content-events">Yükleniyor...</div></div>
     
-    <div class="window-container" id="window-subscribe"><div class="title-bar"><span>Mail Abonelik</span><div class="close-btn" onclick="closeWindow('subscribe')">X</div></div><div class="window-content">
+    <div class="window-container" id="window-subscribe"><div class="title-bar"><span id="title-sub">Mail Abonelik</span><div class="close-btn" onclick="closeWindow('subscribe')">X</div></div><div class="window-content">
         <form class="subscribe-form" id="subForm">
-            <p>En yeni etkinliklerden haberdar olmak için abone ol!</p>
+            <p id="txt-sub-desc">En yeni etkinliklerden haberdar olmak için abone ol!</p>
             <input type="hidden" name="_subject" value="Yeni Web Abonesi">
             <input type="hidden" name="_captcha" value="false">
-            <div><div class="win-label">E-Posta Adresin:</div><input type="email" name="email" class="win-input" placeholder="ornek@maus.com" style="width:95%" required></div>
-            <button type="submit" class="retro-btn">ABONE OL</button>
+            <div><div class="win-label" id="lbl-email">E-Posta Adresin:</div><input type="email" name="email" class="win-input" placeholder="ornek@maus.com" style="width:95%" required></div>
+            <button type="submit" class="retro-btn" id="btn-sub">ABONE OL</button>
         </form>
-        <div id="sub-success" style="display:none; text-align:center; color:green; margin-top:20px;"><h3>✅ BAŞARILI!</h3><p>Aboneliğin alındı.</p></div>
+        <div id="sub-success" style="display:none; text-align:center; color:green; margin-top:20px;"><h3 id="msg-success-h">✅ BAŞARILI!</h3><p id="msg-success-p">Aboneliğin alındı.</p></div>
     </div></div>
     
-    <div class="window-container" id="window-contact"><div class="title-bar"><span>İletişim</span><div class="close-btn" onclick="closeWindow('contact')">X</div></div><div class="window-content" id="content-contact"></div></div>
+    <div class="window-container" id="window-contact"><div class="title-bar"><span id="title-contact">İletişim</span><div class="close-btn" onclick="closeWindow('contact')">X</div></div><div class="window-content" id="content-contact"></div></div>
     <div class="window-container" id="window-map"><div class="title-bar"><span>Maus Maps</span><div class="close-btn" onclick="closeWindow('map')">X</div></div><div class="window-content" style="padding:0; display:flex; flex-direction:column; background:#eef;"><img src="map.jpg" style="width:100%; height:auto; max-height:300px; object-fit:cover; border-bottom:2px solid #888;" alt="Harita" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div style=\'padding:20px;text-align:center\'>map.jpg yüklenemedi</div>')"><div style="padding:15px; text-align:center; background:#fff;"><p style="font-size:1.5rem; color:#008000; font-weight:bold; margin:0;">MAUS ART SPACE</p><p style="margin-top:5px;">Güvenlik Caddesi 17a, Ankara</p></div></div></div>
     
-    <div class="window-container" id="window-press"><div class="title-bar"><span>Basın Odası</span><div class="close-btn" onclick="closeWindow('press')">X</div></div><div class="window-content"><h3>Maus Art Space Basında</h3><ul><li><strong>📰 Sanat Dünyası:</strong> "Ankara'nın Yeni Soluğu" - <a href="https://aposto.com/s/ankaranin-yenisi-maus-art-space" target="_blank">Oku</a></li><li><strong>📰 Artist Safe Zone:</strong> "Çember Resim Vakti" - <a href="https://www.artistsafezone.com/post/%C3%A7ember-resim-vakti-maus-art-space-in-at%C3%B6lyesinde-bize-e%C5%9Flik-edin" target="_blank">Oku</a></li><li><strong>📰 Gazete Duvar:</strong> "Ankara'da kendi halinde bir vaha" - <a href="https://www.gazeteduvar.com.tr/maus-art-space-ankarada-kendi-halinde-bir-vaha-haber-1757202" target="_blank">Oku</a></li><li><strong>📺 Instagram:</strong> "Bizimle Tanışın" - <a href="https://www.instagram.com/p/DF5NufRtX8S/" target="_blank">İzle</a></li></ul></div></div>
+    <div class="window-container" id="window-press"><div class="title-bar"><span id="title-press">Basın</span><div class="close-btn" onclick="closeWindow('press')">X</div></div><div class="window-content"><h3 id="head-press">maus art space hakkında</h3><ul><li><strong>📰 Aposto:</strong> "Ankara'nın Yeni Soluğu" - <a href="https://aposto.com/s/ankaranin-yenisi-maus-art-space" target="_blank">Oku</a></li><li><strong>📰 Artist Safe Zone:</strong> "Çember Resim Vakti" - <a href="https://www.artistsafezone.com/post/%C3%A7ember-resim-vakti-maus-art-space-in-at%C3%B6lyesinde-bize-e%C5%9Flik-edin" target="_blank">Oku</a></li><li><strong>📰 Gazete Duvar:</strong> "Ankara'da kendi halinde bir vaha" - <a href="https://www.gazeteduvar.com.tr/maus-art-space-ankarada-kendi-halinde-bir-vaha-haber-1757202" target="_blank">Oku</a></li><li><strong>📺 Instagram:</strong> "Bizimle Tanışın" - <a href="https://www.instagram.com/p/DF5NufRtX8S/" target="_blank">İzle</a></li></ul></div></div>
     
-    <div class="window-container" id="window-archive"><div class="title-bar"><span>Geçmiş Sergiler</span><div class="close-btn" onclick="closeWindow('archive')">X</div></div><div class="window-content"><ul class="archive-list"><li><span class="archive-date">14 Eylül 2024</span> Fare Açılış Sergisi</li><li><span class="archive-date">27 Aralık 2024</span> Transfer</li><li><span class="archive-date">11 Ocak 2025</span> Hatice Karakaş - Evdekiler</li><li><span class="archive-date">8 Şubat 2025</span> Sinan Hasar - Kafa Kağıdı</li><li><span class="archive-date">22 Şubat 2025</span> 9 Sergisi</li><li><span class="archive-date">11 Nisan 2025</span> Evvela Sergisi</li><li><span class="archive-date">25 Nisan 2025</span> Ev Ankara - Kapı Sergisi</li><li><span class="archive-date">10 Mayıs 2025</span> Eda Gizem Uğur - Yatırım Tavsiyesi Değildir</li><li><span class="archive-date">31 Mayıs 2025</span> Ahmet Mert Hasret - Artık Hep Birlikte Misafiriz</li><li><span class="archive-date">21 Haziran 2025</span> Ece Kaşkır & Ecem Beşir - Uyanığın Gölgesi</li><li><span class="archive-date">6 Eylül 2025</span> Fare II Sergisi</li><li><span class="archive-date">19 Eylül 2025</span> Bi'yerde Görmüştüm</li><li><span class="archive-date">10 Ekim 2025</span> Imgelem/r ve Yansımalar</li><li><span class="archive-date">31 Ekim 2025</span> Furkan Cin & Melih Uçmaz - Vahşi, Kötü ve Çirkin</li></ul></div></div>
+    <div class="window-container" id="window-archive"><div class="title-bar"><span id="title-archive">Geçmiş Sergiler</span><div class="close-btn" onclick="closeWindow('archive')">X</div></div><div class="window-content"><ul class="archive-list"><li><span class="archive-date">14 Eylül 2024</span> Fare Açılış Sergisi</li><li><span class="archive-date">27 Aralık 2024</span> Transfer</li><li><span class="archive-date">11 Ocak 2025</span> Hatice Karakaş - Evdekiler</li><li><span class="archive-date">8 Şubat 2025</span> Sinan Hasar - Kafa Kağıdı</li><li><span class="archive-date">22 Şubat 2025</span> 9 Sergisi</li><li><span class="archive-date">11 Nisan 2025</span> Evvela Sergisi</li><li><span class="archive-date">25 Nisan 2025</span> Ev Ankara - Kapı Sergisi</li><li><span class="archive-date">10 Mayıs 2025</span> Eda Gizem Uğur - Yatırım Tavsiyesi Değildir</li><li><span class="archive-date">31 Mayıs 2025</span> Ahmet Mert Hasret - Artık Hep Birlikte Misafiriz</li><li><span class="archive-date">21 Haziran 2025</span> Ece Kaşkır & Ecem Beşir - Uyanığın Gölgesi</li><li><span class="archive-date">6 Eylül 2025</span> Fare II Sergisi</li><li><span class="archive-date">19 Eylül 2025</span> Bi'yerde Görmüştüm</li><li><span class="archive-date">10 Ekim 2025</span> Imgelem/r ve Yansımalar</li><li><span class="archive-date">31 Ekim 2025</span> Furkan Cin & Melih Uçmaz - Vahşi, Kötü ve Çirkin</li></ul></div></div>
     
-    <div class="window-container" id="window-paint"><div class="title-bar"><span>Maus Paint</span><div class="close-btn" onclick="closeWindow('paint')">X</div></div><div class="window-content"><div class="canvas-frame"><canvas id="paintCanvas"></canvas></div><div class="paint-toolbar"><div class="tool-group"><div class="color-btn active" style="background:#000;" onclick="setColor('#000000',this)"></div><div class="color-btn" style="background:#f00;" onclick="setColor('#ff0000',this)"></div><div class="color-btn" style="background:#ff0;" onclick="setColor('#ffff00',this)"></div><div class="color-btn" style="background:#00f;" onclick="setColor('#0000ff',this)"></div></div><div class="tool-group"><button class="alpha-btn active" onclick="setOpacity(1,this)">Tam</button><button class="alpha-btn" onclick="setOpacity(0.3,this)">Saydam</button><button class="retro-btn btn-eraser" onclick="setEraser()">SİLGİ</button></div><div class="tool-group"><input type="text" id="painter-name" class="paint-name-input" placeholder="İsim (Opsiyonel)"><button class="retro-btn" onclick="clearPaint()">YENİ</button><button class="retro-btn" style="color:blue;" onclick="processDrawing()">GÖNDER</button></div></div></div></div>
+    <div class="window-container" id="window-paint"><div class="title-bar"><span>Maus Paint</span><div class="close-btn" onclick="closeWindow('paint')">X</div></div><div class="window-content"><div class="canvas-frame"><canvas id="paintCanvas"></canvas></div><div class="paint-toolbar"><div class="tool-group"><div class="color-btn active" style="background:#000;" onclick="setColor('#000000',this)"></div><div class="color-btn" style="background:#f00;" onclick="setColor('#ff0000',this)"></div><div class="color-btn" style="background:#ff0;" onclick="setColor('#ffff00',this)"></div><div class="color-btn" style="background:#00f;" onclick="setColor('#0000ff',this)"></div></div><div class="tool-group"><button class="alpha-btn active" onclick="setOpacity(1,this)">Tam</button><button class="alpha-btn" onclick="setOpacity(0.3,this)">Saydam</button><button class="retro-btn btn-eraser" id="btn-eraser" onclick="setEraser()">SİLGİ</button></div><div class="tool-group"><input type="text" id="painter-name" class="paint-name-input" placeholder="İsim (Opsiyonel)"><button class="retro-btn" id="btn-new" onclick="clearPaint()">YENİ</button><button class="retro-btn" id="btn-send" style="color:blue;" onclick="processDrawing()">GÖNDER</button></div></div></div></div>
     
-    <div class="window-container" id="window-gallery" style="height:60vh;"><div class="title-bar"><span>C:\Paint Galerisi</span><div class="close-btn" onclick="closeWindow('gallery')">X</div></div><div class="window-content" id="gallery-content"><p style="text-align:center">Yükleniyor...</p></div></div>
+    <div class="window-container" id="window-gallery" style="height:60vh;"><div class="title-bar"><span id="title-gallery">C:\Paint Galerisi</span><div class="close-btn" onclick="closeWindow('gallery')">X</div></div><div class="window-content" id="gallery-content"><p style="text-align:center">Yükleniyor...</p></div></div>
     
-    <div class="window-container" id="window-media" style="height:60vh;"><div class="title-bar"><span>C:\Atölye Anıları</span><div class="close-btn" onclick="closeWindow('media')">X</div></div><div class="window-content" id="media-content">
+    <div class="window-container" id="window-media" style="height:60vh;"><div class="title-bar"><span id="title-media">C:\Atölye Anıları</span><div class="close-btn" onclick="closeWindow('media')">X</div></div><div class="window-content" id="media-content">
         <div class="win-file" onclick="openPhoto('atolye1.jpg','Atölye 1')"><img src="atolye1.jpg" class="win-thumb" onerror="this.src='https://win98icons.alexmeub.com/icons/png/image_file-2.png'"><div class="win-filename">atolye1.jpg</div></div>
         <div class="win-file" onclick="openPhoto('atolye2.jpg','Atölye 2')"><img src="atolye2.jpg" class="win-thumb" onerror="this.src='https://win98icons.alexmeub.com/icons/png/image_file-2.png'"><div class="win-filename">atolye2.jpg</div></div>
         <div class="win-file" onclick="openPhoto('atolye3.jpg','Atölye 3')"><img src="atolye3.jpg" class="win-thumb" onerror="this.src='https://win98icons.alexmeub.com/icons/png/image_file-2.png'"><div class="win-filename">atolye3.jpg</div></div>
@@ -275,12 +304,10 @@
     <div class="window-container" id="window-viewer" style="height:80vh; width:90%; max-width:800px;"><div class="title-bar"><span id="viewer-title">Resim</span><div class="close-btn" onclick="closeViewer()">X</div></div><div class="window-content" style="padding:0; display:flex; background:#fff;"><div class="img-display-area"><img id="viewer-img" src=""></div><div class="img-controls"><button class="retro-btn" onclick="closeViewer()">RESMİ KAPAT</button></div></div></div>
 
     <div id="clippy-container" class="clippy-float" style="display:none; position: fixed; bottom: 70px; right: 30px; z-index: 10000; flex-direction: column; align-items: flex-end;">
-        
         <div id="clippy-bubble" style="background: #ffffe1; border: 1px solid #000; border-radius: 5px; padding: 10px; margin-bottom: 5px; font-family: Tahoma, sans-serif; font-size: 12px; color: #000; box-shadow: 4px 4px 0px rgba(0,0,0,0.2); max-width: 200px; position: relative; display:none;">
-            <span id="clippy-text">Selam! Ben Maus.</span>
+            <span id="clippy-text">Selam!</span>
             <div style="position: absolute; bottom: -6px; right: 30px; width: 10px; height: 10px; background: #ffffe1; border-bottom: 1px solid #000; border-right: 1px solid #000; transform: rotate(45deg);"></div>
         </div>
-
         <div style="position: relative; cursor: pointer;" onclick="pokeClippy()">
             <img id="clippy-img" src="clippy1.gif" style="width: 100px; height: 100px; object-fit: contain;" alt="Clippy">
             <div onclick="closeClippy(event)" style="position: absolute; top: -10px; right: 0px; background: #c0c0c0; color: black; border: 2px solid #fff; border-bottom-color: #000; border-right-color: #000; width: 20px; height: 20px; font-size: 14px; text-align: center; line-height: 16px; cursor: pointer; font-weight: bold; box-shadow: 1px 1px 0px #000;">X</div>
@@ -289,7 +316,7 @@
 
     <script>
         // -------------------------------------------------------------
-        // FIREBASE & TELEGRAM AYARLARI
+        // FIREBASE & TELEGRAM
         // -------------------------------------------------------------
         const firebaseConfig = {
             apiKey: "AIzaSyDtMxhVBNBG9rH6Vog40nGA2WusJr4o7lY",
@@ -300,189 +327,143 @@
             appId: "1:510048575178:web:593c77e66462fc28f2de33",
             measurementId: "G-87744QJ9GD"
         };
-        
         const tPart1 = "8356360725"; 
         const tPart2 = ":AAGuomCF8ss0lk09M5ZJav-Q0dGZ4e5q9bk"; 
-        
         const TG_BOT_TOKEN = tPart1 + tPart2; 
         const TG_CHAT_ID = "1903503080";
-        // -------------------------------------------------------------
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // --- RASTGELE ARKAPLAN FONKSİYONU ---
-        const bgs = [
-            {type:'color', val:'#008080'},
-            {type:'color', val:'#000000'},
-            {type:'color', val:'#ff0055'},
-            {type:'image', val:'arkaplan1.jpg'},
-            {type:'image', val:'arkaplan2.jpg'},
-            {type:'image', val:'arkaplan3.jpg'},
-            {type:'image', val:'arkaplan4.jpg'},
-            {type:'image', val:'arkaplan5.jpg'},
-            {type:'image', val:'arkaplan6.jpg'},
-            {type:'image', val:'arkaplan7.jpg'},
-            {type:'image', val:'arkaplan8.jpg'}
-        ];
-
-        function setRandomBackground() {
-            const choice = bgs[Math.floor(Math.random() * bgs.length)];
-            if (choice.type === 'color') {
-                document.body.style.backgroundImage = '';
-                document.body.style.backgroundColor = choice.val;
-                document.querySelectorAll('.desktop-icon span').forEach(s => s.style.backgroundColor = choice.val);
-            } else {
-                document.body.style.backgroundColor = '#000'; 
-                document.body.style.backgroundImage = `url('${choice.val}')`;
-                document.querySelectorAll('.desktop-icon span').forEach(s => s.style.backgroundColor = 'transparent');
+        // --- DİL SÖZLÜĞÜ ---
+        const translations = {
+            tr: {
+                about: "Biz Kimiz", events: "Etkinlikler", sub: "Mail Abonelik", contact: "İletişim",
+                map: "Harita", memories: "Atölye Anıları", gallery: "Paint Galerisi", shop: "Mağaza",
+                start: "Başlat", press: "Basın", archive: "Geçmiş Sergiler", dontclick: "BASMA!",
+                randombg: "🎲 Rastgele Arkaplan", syserror: "Sistem Hatası", shutdown: "Bilgisayarı Kapat",
+                title_about: "Biz Kimiz.txt", title_events: "Etkinlik Takvimi", title_sub: "Mail Abonelik",
+                title_contact: "İletişim", title_press: "Basın Odası", title_archive: "Geçmiş Sergiler",
+                title_gallery: "C:\\Paint Galerisi", title_media: "C:\\Atölye Anıları",
+                head_press: "Maus Art Space Basında",
+                txt_sub_desc: "En yeni etkinliklerden haberdar olmak için abone ol!",
+                lbl_email: "E-Posta Adresin:", btn_sub: "ABONE OL",
+                msg_success_h: "✅ BAŞARILI!", msg_success_p: "Aboneliğin alındı.",
+                btn_eraser: "SİLGİ", btn_new: "YENİ", btn_send: "GÖNDER",
+                about_content: `<p>Maus Art Space, sanatın herkes için erişilebilir olduğu bir platform yaratmayı hedefleyerek yola çıkan, Ankara’da bulunan bir sanat alanı.</p><br><p>Maus, yaratıcı üretimi teşvik etmek, sanatçıların ve sanat meraklılarının biraraya gelerek etkileşimde bulunabilmeleri amacıyla 14 Eylül 2024'te açıldı.</p>`,
+                contact_content: `<p>📧 hello@mausart.space</p><p>📍 Güvenlik Caddesi 17a</p>`
+            },
+            en: {
+                about: "About Us", events: "Events", sub: "Subscribe", contact: "Contact",
+                map: "Map", memories: "Studio Memories", gallery: "Paint Gallery", shop: "Shop",
+                start: "Start", press: "Press", archive: "Past Exhibitions", dontclick: "DON'T CLICK!",
+                randombg: "🎲 Random Wallpaper", syserror: "System Error", shutdown: "Shut Down",
+                title_about: "About Us.txt", title_events: "Events Calendar", title_sub: "Subscribe",
+                title_contact: "Contact", title_press: "Press Room", title_archive: "Past Exhibitions",
+                title_gallery: "C:\\Paint Gallery", title_media: "C:\\Studio Memories",
+                head_press: "Maus Art Space in Press",
+                txt_sub_desc: "Subscribe to get notified about upcoming events!",
+                lbl_email: "Your Email:", btn_sub: "SUBSCRIBE",
+                msg_success_h: "✅ SUCCESS!", msg_success_p: "Subscription received.",
+                btn_eraser: "ERASER", btn_new: "NEW", btn_send: "SEND",
+                about_content: `<p>Maus Art Space is an art space in Ankara, aiming to create a platform where art is accessible to everyone.</p><br><p>Maus opened on September 14, 2024, to encourage creative production and allow artists and art enthusiasts to interact.</p>`,
+                contact_content: `<p>📧 hello@mausart.space</p><p>📍 Guvenlik St. 17a</p>`
             }
+        };
+
+        let currentLang = 'tr';
+
+        function toggleLanguage() {
+            currentLang = (currentLang === 'tr') ? 'en' : 'tr';
+            const t = translations[currentLang];
+            
+            // Buton Metni
+            document.getElementById('lang-btn').innerText = currentLang.toUpperCase();
+
+            // Masaüstü İkonları
+            document.getElementById('lbl-about').innerText = t.about;
+            document.getElementById('lbl-events').innerText = t.events;
+            document.getElementById('lbl-sub').innerText = t.sub;
+            document.getElementById('lbl-contact').innerText = t.contact;
+            document.getElementById('lbl-map').innerText = t.map;
+            document.getElementById('lbl-memories').innerText = t.memories;
+            document.getElementById('lbl-gallery').innerText = t.gallery;
+            document.getElementById('lbl-shop').innerText = t.shop;
+
+            // Başlat Menüsü
+            document.getElementById('lbl-start').innerText = t.start;
+            document.getElementById('lbl-press').innerText = t.press;
+            document.getElementById('lbl-archive').innerText = t.archive;
+            document.getElementById('lbl-dontclick').innerText = t.dontclick;
+            document.getElementById('lbl-randombg').innerText = t.randombg;
+            document.getElementById('lbl-syserror').innerText = t.syserror;
+            document.getElementById('lbl-shutdown').innerText = t.shutdown;
+
+            // Pencere Başlıkları
+            document.getElementById('title-about').innerText = t.title_about;
+            document.getElementById('title-events').innerText = t.title_events;
+            document.getElementById('title-sub').innerText = t.title_sub;
+            document.getElementById('title-contact').innerText = t.title_contact;
+            document.getElementById('title-press').innerText = t.title_press;
+            document.getElementById('title-archive').innerText = t.title_archive;
+            document.getElementById('title-gallery').innerText = t.title_gallery;
+            document.getElementById('title-media').innerText = t.title_media;
+
+            // İçerikler
+            document.getElementById('content-about').innerHTML = t.about_content;
+            document.getElementById('content-contact').innerHTML = t.contact_content;
+            document.getElementById('head-press').innerText = t.head_press;
+            
+            // Form & Paint
+            document.getElementById('txt-sub-desc').innerText = t.txt_sub_desc;
+            document.getElementById('lbl-email').innerText = t.lbl_email;
+            document.getElementById('btn-sub').innerText = t.btn_sub;
+            document.getElementById('msg-success-h').innerText = t.msg_success_h;
+            document.getElementById('msg-success-p').innerText = t.msg_success_p;
+            document.getElementById('btn-eraser').innerText = t.btn_eraser;
+            document.getElementById('btn-new').innerText = t.btn_new;
+            document.getElementById('btn-send').innerText = t.btn_send;
+            document.getElementById('painter-name').placeholder = (currentLang === 'tr') ? "İsim (Opsiyonel)" : "Name (Optional)";
         }
 
-        function changeTheme(c) { 
-            document.body.style.backgroundImage = '';
-            document.body.style.backgroundColor=c; 
-            document.querySelectorAll('.desktop-icon span').forEach(s=>s.style.backgroundColor=c); 
-        }
 
         // --- OTO ADMIN AÇMA VE URL ONAY ---
         const urlParams = new URLSearchParams(window.location.search);
-        
         if (urlParams.has('admin')) {
-            window.onload = function() { 
-                closeAllWindows();
-                const w = document.getElementById('window-admin');
-                w.classList.add('active');
-                w.style.zIndex = 9999;
-            }
+            window.onload = function() { closeAllWindows(); document.getElementById('window-admin').classList.add('active'); document.getElementById('window-admin').style.zIndex = 9999; }
         }
-
         const approveId = urlParams.get('approve');
         if (approveId) {
             document.getElementById('admin-approve-overlay').style.display = 'flex';
-            db.collection("gallery").doc(approveId).update({
-                status: "approved"
-            }).then(() => {
-                document.getElementById('admin-approve-overlay').innerHTML = "<h1>✅ ONAYLANDI!</h1><p>Çizim galeride yayınlandı. Bu pencereyi kapatabilirsiniz.</p>";
-            }).catch((error) => {
-                console.error("Hata:", error);
-                document.getElementById('admin-approve-overlay').innerHTML = "<h1>❌ HATA!</h1><p>"+error.message+"</p>";
-            });
+            db.collection("gallery").doc(approveId).update({ status: "approved" })
+            .then(() => { document.getElementById('admin-approve-overlay').innerHTML = "<h1>✅ ONAYLANDI!</h1><p>Çizim galeride yayınlandı. Bu pencereyi kapatabilirsiniz.</p>"; })
+            .catch((error) => { console.error("Hata:", error); document.getElementById('admin-approve-overlay').innerHTML = "<h1>❌ HATA!</h1><p>"+error.message+"</p>"; });
         }
 
-        // --- YÖNETİCİ PANELİ İŞLEMLERİ (GÜVENLİ LOGİN) ---
-        function adminLogin() {
-            const p = document.getElementById('admin-pass').value;
-            const email = "admin@maus.com"; 
-            firebase.auth().signInWithEmailAndPassword(email, p)
-            .then((userCredential) => {
-                document.getElementById('admin-login-screen').style.display='none';
-                document.getElementById('admin-panel-screen').style.display='flex';
-                loadAdminEvents();
-            })
-            .catch((error) => {
-                alert("Hatalı Şifre!");
-            });
-        }
+        // --- FIREBASE FUNCTIONS ---
+        function adminLogin() { const p = document.getElementById('admin-pass').value; const email = "admin@maus.com"; firebase.auth().signInWithEmailAndPassword(email, p).then((userCredential) => { document.getElementById('admin-login-screen').style.display='none'; document.getElementById('admin-panel-screen').style.display='flex'; loadAdminEvents(); }).catch((error) => { alert("Hatalı Şifre!"); }); }
+        function addEventToFirebase() { const date = document.getElementById('new-evt-date').value; const title = document.getElementById('new-evt-title').value; const link = document.getElementById('new-evt-link').value; if(!date || !title) { alert("Tarih ve Başlık zorunludur."); return; } db.collection("events").add({ date: date, title: title, link: link, createdAt: firebase.firestore.FieldValue.serverTimestamp() }).then(() => { alert("✅ Etkinlik Eklendi!"); document.getElementById('new-evt-date').value = ""; document.getElementById('new-evt-title').value = ""; document.getElementById('new-evt-link').value = ""; loadAdminEvents(); }); }
+        function deleteEventFromFirebase(docId) { if(confirm("Bu etkinliği silmek istediğine emin misin?")) { db.collection("events").doc(docId).delete().then(() => { loadAdminEvents(); }); } }
+        function loadAdminEvents() { const list = document.getElementById('admin-event-list'); list.innerHTML = "Yükleniyor..."; db.collection("events").orderBy("createdAt", "desc").get().then((snapshot) => { let html = ""; snapshot.forEach((doc) => { const evt = doc.data(); html += `<li>${evt.date} - ${evt.title} <button onclick="deleteEventFromFirebase('${doc.id}')" style="color:red; margin-left:10px;">[SİL]</button></li>`; }); list.innerHTML = html; }); }
+        function loadFirebaseEvents() { const list = document.getElementById('content-events'); db.collection("events").orderBy("createdAt", "desc").onSnapshot((snapshot) => { let html = ""; if(snapshot.empty) { html = "<p>Şu an planlanan etkinlik yok.</p>"; } snapshot.forEach((doc) => { const evt = doc.data(); html += `<div class="event-item"><div class="event-info"><span class="event-date">${evt.date}</span><span>${evt.title}</span></div>${evt.link && evt.link!=='#' ? `<a href="${evt.link}" target="_blank" class="buy-btn">BİLET AL</a>` : ''}</div>`; }); list.innerHTML = html; }); }
+        function loadFirebaseGallery() { const gal = document.getElementById('gallery-content'); db.collection("gallery").where("status", "==", "approved").onSnapshot((snapshot) => { let items = []; snapshot.forEach((doc) => { items.push(doc.data()); }); items.sort((a, b) => { if(!a.createdAt || !b.createdAt) return 0; return b.createdAt.seconds - a.createdAt.seconds; }); let html = ""; if(items.length === 0) { html = "<p style='width:100%;text-align:center'>Henüz onaylanmış çizim yok.</p>"; } items.forEach((item) => { let displayName = item.name ? item.name : "Çizim"; html += `<div class="win-file" onclick="openPhoto('${item.image}','${displayName}')"><img src="${item.image}" class="win-thumb"><div class="win-filename">${displayName}</div></div>`; }); gal.innerHTML = html; }); }
 
-        function addEventToFirebase() {
-            const date = document.getElementById('new-evt-date').value;
-            const title = document.getElementById('new-evt-title').value;
-            const link = document.getElementById('new-evt-link').value;
-
-            if(!date || !title) { alert("Tarih ve Başlık zorunludur."); return; }
-
-            db.collection("events").add({
-                date: date,
-                title: title,
-                link: link,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            }).then(() => {
-                alert("✅ Etkinlik Eklendi!");
-                document.getElementById('new-evt-date').value = "";
-                document.getElementById('new-evt-title').value = "";
-                document.getElementById('new-evt-link').value = "";
-                loadAdminEvents(); 
-            });
-        }
-
-        function deleteEventFromFirebase(docId) {
-            if(confirm("Bu etkinliği silmek istediğine emin misin?")) {
-                db.collection("events").doc(docId).delete().then(() => {
-                    loadAdminEvents();
-                });
-            }
-        }
-
-        function loadAdminEvents() {
-            const list = document.getElementById('admin-event-list');
-            list.innerHTML = "Yükleniyor...";
-            db.collection("events").orderBy("createdAt", "desc").get().then((snapshot) => {
-                let html = "";
-                snapshot.forEach((doc) => {
-                    const evt = doc.data();
-                    html += `<li>${evt.date} - ${evt.title} <button onclick="deleteEventFromFirebase('${doc.id}')" style="color:red; margin-left:10px;">[SİL]</button></li>`;
-                });
-                list.innerHTML = html;
-            });
-        }
-
-        // --- ANA SAYFA ETKİNLİK ÇEKME ---
-        function loadFirebaseEvents() {
-            const list = document.getElementById('content-events');
-            db.collection("events").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
-                let html = "";
-                if(snapshot.empty) { html = "<p>Şu an planlanan etkinlik yok.</p>"; }
-                snapshot.forEach((doc) => {
-                    const evt = doc.data();
-                    html += `<div class="event-item"><div class="event-info"><span class="event-date">${evt.date}</span><span>${evt.title}</span></div>${evt.link && evt.link!=='#' ? `<a href="${evt.link}" target="_blank" class="buy-btn">BİLET AL</a>` : ''}</div>`;
-                });
-                list.innerHTML = html;
-            });
-        }
-
-        // --- GALERİ ÇEKME ---
-        function loadFirebaseGallery() {
-            const gal = document.getElementById('gallery-content');
-            db.collection("gallery").where("status", "==", "approved").onSnapshot((snapshot) => {
-                let items = [];
-                snapshot.forEach((doc) => { items.push(doc.data()); });
-                
-                items.sort((a, b) => {
-                    if(!a.createdAt || !b.createdAt) return 0;
-                    return b.createdAt.seconds - a.createdAt.seconds;
-                });
-
-                let html = "";
-                if(items.length === 0) { html = "<p style='width:100%;text-align:center'>Henüz onaylanmış çizim yok.</p>"; }
-                
-                items.forEach((item) => {
-                    let displayName = item.name ? item.name : "Çizim";
-                    html += `<div class="win-file" onclick="openPhoto('${item.image}','${displayName}')"><img src="${item.image}" class="win-thumb"><div class="win-filename">${displayName}</div></div>`;
-                });
-                gal.innerHTML = html;
-            });
-        }
-
-        // Başlangıçta Yükle
+        // --- INITIAL LOAD ---
+        document.getElementById('content-about').innerHTML = translations.tr.about_content;
+        document.getElementById('content-contact').innerHTML = translations.tr.contact_content;
         loadFirebaseEvents();
 
-        // --- ÇİZİM GÖNDERME ---
+        // --- PAINT ---
         window.processDrawing = () => {
             const painterName = document.getElementById('painter-name').value || "Anonim";
-            
             if(!confirm(`Çizimin "${painterName}" ismiyle onaya gönderilecek. Onaylıyor musun?`)) return;
-            
             const btn = document.querySelector('button[onclick="processDrawing()"]');
             const originalText = btn.innerText;
             btn.innerText = "GÖNDERİLİYOR..."; btn.disabled = true;
-
             pCanvas.toBlob((blob) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(blob); 
                 reader.onloadend = function() {
                     const base64data = reader.result;
-                    
                     const tempImg = new Image();
                     tempImg.src = base64data;
                     tempImg.onload = function() {
@@ -490,121 +471,40 @@
                         const ctx = tempCanvas.getContext('2d');
                         tempCanvas.width = pCanvas.width;
                         tempCanvas.height = pCanvas.height;
-                        
                         ctx.fillStyle = "#FFFFFF";
                         ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
                         ctx.drawImage(tempImg, 0, 0);
                         const optimizedBase64 = tempCanvas.toDataURL('image/jpeg', 0.5); 
-
-                        db.collection("gallery").add({
-                            image: optimizedBase64,
-                            status: "pending",
-                            name: painterName,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                        }).then((docRef) => {
-                            
+                        db.collection("gallery").add({ image: optimizedBase64, status: "pending", name: painterName, createdAt: firebase.firestore.FieldValue.serverTimestamp() }).then((docRef) => {
                             const currentUrl = window.location.href.split('?')[0]; 
                             const approveLink = `${currentUrl}?approve=${docRef.id}`;
-                            
                             const msgText = `🎨 <b>Yeni Maus Paint Çizimi!</b>\n\n👤 <b>Çizen:</b> ${painterName}\n\nOnaylamak için tıkla:\n<a href="${approveLink}">👉 RESMİ ONAYLA</a>`;
-
                             const formData = new FormData();
                             formData.append("chat_id", TG_CHAT_ID);
                             formData.append("caption", msgText);
                             formData.append("photo", blob, `${painterName}_maus_cizim.png`);
                             formData.append("parse_mode", "HTML");
-
-                            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendPhoto`, {
-                                method: 'POST',
-                                body: formData
-                            }).then(() => {
-                                alert("✅ Çizim yöneticiye gönderildi!");
+                            fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData }).then(() => {
+                                alert("✅ Çizim gönderildi!");
                                 btn.innerText = "GÖNDERİLDİ";
                                 setTimeout(() => { btn.innerText = originalText; btn.disabled = false; clearPaint(); document.getElementById('painter-name').value=''; }, 2000);
                             });
-
-                        }).catch((error) => {
-                            console.error("Hata:", error);
-                            alert("❌ Kayıt başarısız.");
-                            btn.innerText = originalText; btn.disabled = false;
-                        });
+                        }).catch((error) => { console.error("Hata:", error); alert("❌ Kayıt başarısız."); btn.innerText = originalText; btn.disabled = false; });
                     };
                 }
             }, 'image/png');
         };
 
-        // --- MAİL ABONELİK ---
+        // --- OTHER ---
         const subForm = document.getElementById('subForm');
-        subForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = subForm.querySelector('button');
-            const originalText = btn.innerText;
-            btn.innerText = "KAYDEDİLİYOR..."; btn.disabled = true;
+        subForm.addEventListener('submit', function(e) { e.preventDefault(); const btn = subForm.querySelector('button'); const originalText = btn.innerText; btn.innerText = "KAYDEDİLİYOR..."; btn.disabled = true; const formData = new FormData(subForm); fetch("https://formsubmit.co/ajax/hello@mausart.space", { method: "POST", headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify(Object.fromEntries(formData)) }).then(response => response.json()).then(data => { subForm.style.display = 'none'; document.getElementById('sub-success').style.display = 'block'; }).catch(error => { alert('Hata oluştu.'); btn.innerText = originalText; btn.disabled = false; }); });
 
-            const formData = new FormData(subForm);
-            fetch("https://formsubmit.co/ajax/hello@mausart.space", {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                body: JSON.stringify(Object.fromEntries(formData))
-            })
-            .then(response => response.json())
-            .then(data => {
-                subForm.style.display = 'none';
-                document.getElementById('sub-success').style.display = 'block';
-            })
-            .catch(error => {
-                alert('Hata oluştu.');
-                btn.innerText = originalText; btn.disabled = false;
-            });
-        });
-
-        const MAUS_INFO = { about: `<p>Maus Art Space, sanatın herkes için erişilebilir olduğu bir platform yaratmayı hedefleyerek yola çıkan, Ankara’da bulunan bir sanat alanı.</p><br><p>Maus, yaratıcı üretimi teşvik etmek, sanatçıların ve sanat meraklılarının biraraya gelerek etkileşimde bulunabilmeleri amacıyla 14 Eylül 2024'te açıldı.</p>`, contact: `<p>📧 hello@mausart.space</p><p>📍 Güvenlik Caddesi 17a</p>` };
-        document.getElementById('content-about').innerHTML = MAUS_INFO.about; document.getElementById('content-contact').innerHTML = MAUS_INFO.contact;
         setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}), 1000);
         function toggleStart() { const m = document.getElementById('start-menu'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; document.querySelector('.start-btn').classList.toggle('active'); }
         document.getElementById('desktop').addEventListener('click', () => { document.getElementById('start-menu').style.display = 'none'; document.querySelector('.start-btn').classList.remove('active'); });
         function openLink(url) { window.open(url, '_blank'); }
-        
-        // SİSTEM YENİDEN BAŞLATMA (REBOOT EKRANI DAHİL)
-        function systemReset() { 
-            // 1. CRT Animasyonunu Başlat
-            document.getElementById('crt-overlay').style.display='block'; 
-            document.getElementById('crt-overlay').classList.add('crt-anim'); 
-            
-            // 2. 600ms Sonra Siyah Boot Ekranını Göster
-            setTimeout(() => {
-                document.getElementById('boot-screen').style.display = 'flex';
-                runBootSequence();
-            }, 600);
-        }
-
-        function runBootSequence() {
-            const log = document.getElementById('boot-log');
-            const lines = [
-                "Loading system...",
-                "Checking art galleries...",
-                "Initializing paint modules...",
-                "Maus Art Space is ready."
-            ];
-            let i = 0;
-            // Yazıların tek tek gelmesi
-            const interval = setInterval(() => {
-                if (i < lines.length) {
-                    log.innerHTML += "<div>" + lines[i] + "</div>";
-                    i++;
-                } else {
-                    clearInterval(interval);
-                    // Her şey bitince ekranı temizle (SOFT REBOOT - SAYFAYI YENİLEMEZ)
-                    setTimeout(() => {
-                        document.getElementById('boot-screen').style.display = 'none';
-                        document.getElementById('crt-overlay').style.display = 'none';
-                        document.getElementById('crt-overlay').classList.remove('crt-anim');
-                        closeAllWindows(); // Masaüstünü temizle
-                    }, 500); 
-                }
-            }, 600); 
-        }
-
+        function systemReset() { document.getElementById('crt-overlay').style.display='block'; document.getElementById('crt-overlay').classList.add('crt-anim'); setTimeout(()=> { document.getElementById('boot-screen').style.display = 'flex'; runBootSequence(); }, 600); }
+        function runBootSequence() { const log = document.getElementById('boot-log'); const lines = [ "Loading system...", "Dandik bi takım yalandan yazılar...", "Initializing paint modules...", "maus is ready." ]; let i = 0; const interval = setInterval(() => { if (i < lines.length) { log.innerHTML += "<div>" + lines[i] + "</div>"; i++; } else { clearInterval(interval); setTimeout(() => { document.getElementById('boot-screen').style.display = 'none'; document.getElementById('crt-overlay').style.display = 'none'; document.getElementById('crt-overlay').classList.remove('crt-anim'); closeAllWindows(); }, 500); } }, 600); }
         function closeAllWindows() { document.querySelectorAll('.window-container').forEach(w => { if(w.id !== 'window-viewer') w.classList.remove('active'); }); closeSurprise(); closeDino(); }
         function openWindow(id) { closeAllWindows(); const w = document.getElementById('window-'+id); if(w) { w.classList.add('active'); w.style.zIndex = 100; if(id==='paint') setTimeout(resizePaintCanvas, 50); if(id==='gallery') loadFirebaseGallery(); if(id==='events') loadFirebaseEvents(); if(id==='admin') loadAdminPanel(); } }
         function closeWindow(id) { document.getElementById('window-'+id).classList.remove('active'); }
@@ -613,12 +513,7 @@
 
         const pCanvas = document.getElementById('paintCanvas'); const pCtx = pCanvas.getContext('2d');
         let isDrawing=false, lastX=0, lastY=0, pColor='#000', pAlpha=1, isEraser=false;
-        function resizePaintCanvas() { 
-            const containerWidth = pCanvas.parentElement.clientWidth;
-            pCanvas.width = containerWidth; 
-            pCanvas.height = containerWidth; 
-            updateContext(); 
-        }
+        function resizePaintCanvas() { const containerWidth = pCanvas.parentElement.clientWidth; pCanvas.width = containerWidth; pCanvas.height = containerWidth; updateContext(); }
         function updateContext() { pCtx.lineWidth = isEraser?20:4; pCtx.lineCap='round'; pCtx.strokeStyle = isEraser?'#ffffff':pColor; pCtx.globalAlpha = isEraser?1:pAlpha; }
         window.setColor = (c,b) => { isEraser=false; pColor=c; document.querySelectorAll('.color-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); updateContext(); }
         window.setOpacity = (a,b) => { isEraser=false; pAlpha=a; document.querySelectorAll('.alpha-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); updateContext(); }
@@ -630,51 +525,22 @@
         pCanvas.addEventListener('pointerdown',startP); pCanvas.addEventListener('pointermove',moveP); pCanvas.addEventListener('pointerup',stopP);
         window.clearPaint = () => pCtx.clearRect(0,0,pCanvas.width, pCanvas.height);
         
+        const bgs = [{type:'color',val:'#008080'},{type:'color',val:'#000000'},{type:'color',val:'#ff0055'},{type:'image',val:'arkaplan1.jpg'},{type:'image',val:'arkaplan2.jpg'},{type:'image',val:'arkaplan3.jpg'},{type:'image',val:'arkaplan4.jpg'},{type:'image',val:'arkaplan5.jpg'},{type:'image',val:'arkaplan6.jpg'},{type:'image',val:'arkaplan7.jpg'},{type:'image',val:'arkaplan8.jpg'}];
+        function setRandomBackground() { const choice = bgs[Math.floor(Math.random() * bgs.length)]; if (choice.type === 'color') { document.body.style.backgroundImage = ''; document.body.style.backgroundColor = choice.val; document.querySelectorAll('.desktop-icon span').forEach(s => s.style.backgroundColor = choice.val); } else { document.body.style.backgroundColor = '#000'; document.body.style.backgroundImage = `url('${choice.val}')`; document.querySelectorAll('.desktop-icon span').forEach(s => s.style.backgroundColor = 'transparent'); } }
+        
         const timerDisplay=document.getElementById('show-timer'), closeBtn=document.getElementById('closeShowBtn'); let countdownInterval;
         function triggerSurprise() { document.getElementById('start-menu').style.display='none'; document.getElementById('surprise-overlay').style.display='flex'; document.getElementById('discoBall').classList.add('drop'); const audio=document.getElementById('surprise-audio'); audio.currentTime=0; audio.play().catch(e=>{}); let timeLeft=10; timerDisplay.innerText=timeLeft; timerDisplay.style.display='block'; closeBtn.style.display='none'; if(countdownInterval) clearInterval(countdownInterval); countdownInterval=setInterval(()=>{ timeLeft--; timerDisplay.innerText=timeLeft; if(timeLeft<=0){ clearInterval(countdownInterval); timerDisplay.style.display='none'; closeBtn.style.display='block'; } },1000); }
         function closeSurprise() { document.getElementById('surprise-overlay').style.display='none'; document.getElementById('discoBall').classList.remove('drop'); const audio=document.getElementById('surprise-audio'); audio.pause(); audio.currentTime=0; clearInterval(countdownInterval); }
         
-        const dCanvas=document.getElementById('dinoCanvas'), dCtx=dCanvas.getContext('2d');
-        const dinoImg = new Image(); dinoImg.src = 'dino.png'; 
-        let dInt, dSpd=6, dSc=0, dPly={x:50,y:200,w:30,h:30,dy:0,jump:false,g:200}, dObs=[], dGameRunning = false;
+        const dCanvas=document.getElementById('dinoCanvas'), dCtx=dCanvas.getContext('2d'); const dinoImg = new Image(); dinoImg.src = 'dino.png'; let dInt, dSpd=6, dSc=0, dPly={x:50,y:200,w:30,h:30,dy:0,jump:false,g:200}, dObs=[], dGameRunning = false;
         function startDinoGame() { closeAllWindows(); document.getElementById('dino-screen').style.display='flex'; dCanvas.width=600;dCanvas.height=300; dSc=0; dSpd=6; dObs=[]; dPly.y=dPly.g; dPly.dy=0; dGameRunning = false; dCtx.fillStyle='#0000aa'; dCtx.fillRect(0,0,600,300); dCtx.fillStyle='#fff'; dCtx.font="30px monospace"; dCtx.textAlign="center"; dCtx.fillText("BAŞLAMAK İÇİN TIKLA", 300, 150); window.addEventListener('keydown',dJump); dCanvas.addEventListener('touchstart',dJump); dCanvas.addEventListener('mousedown',dJump); if(dInt) clearInterval(dInt); dInt=setInterval(dLoop,20); }
         function closeDinoAndReset() { closeDino(); systemReset(); }
         function closeDino() { clearInterval(dInt); window.removeEventListener('keydown',dJump); dCanvas.removeEventListener('touchstart',dJump); dCanvas.removeEventListener('mousedown',dJump); document.getElementById('dino-screen').style.display='none'; }
         function dJump(e) { if((e.code==='Space'||e.type==='touchstart'||e.type==='mousedown')) { e.preventDefault(); if(!dGameRunning) { dGameRunning = true; dSpd=6; dSc=0; dObs=[]; } else if(!dPly.jump) { dPly.dy=-15; dPly.jump=true; } } }
-        function dLoop() { if(!dGameRunning) return; dPly.dy+=0.9; dPly.y+=dPly.dy; if(dPly.y>dPly.g){dPly.y=dPly.g;dPly.jump=false;} let canSpawn = dObs.length === 0 || dObs[dObs.length-1].x < 450; let rate = 0.015 + (dSc * 0.0001); if(canSpawn && Math.random() < rate) { let h = 30 + Math.random()*30; dObs.push({x:600,w:25,h:h}); } dObs.forEach(o=>o.x-=dSpd); dObs=dObs.filter(o=>o.x>-50); dObs.forEach(o=>{ if(dPly.x<o.x+o.w && dPly.x+dPly.w>o.x && dPly.y<240 && dPly.y+dPly.h>240-o.h){ dGameRunning=false; dCtx.fillStyle='#fff'; dCtx.font="30px monospace"; dCtx.textAlign="center"; dCtx.fillText("OYUN BİTTİ! SKOR: "+Math.floor(dSc), 300, 150); dCtx.font="20px monospace"; dCtx.fillText("Tekrar oynamak için TIKLA", 300, 180); }}); dSc+=0.15; dSpd = 6 + (dSc * 0.04); dCtx.fillStyle='#0000aa'; dCtx.fillRect(0,0,600,300); dCtx.fillStyle='#fff'; dCtx.fillRect(0,230,600,2); 
-        dCtx.drawImage(dinoImg, dPly.x, dPly.y, dPly.w, dPly.h); 
-        dObs.forEach(o=>dCtx.fillRect(o.x,230-o.h,o.w,o.h)); dCtx.font="20px monospace"; dCtx.textAlign="left"; dCtx.fillText("SKOR: "+Math.floor(dSc),20,30); }
+        function dLoop() { if(!dGameRunning) return; dPly.dy+=0.9; dPly.y+=dPly.dy; if(dPly.y>dPly.g){dPly.y=dPly.g;dPly.jump=false;} let canSpawn = dObs.length === 0 || dObs[dObs.length-1].x < 450; let rate = 0.015 + (dSc * 0.0001); if(canSpawn && Math.random() < rate) { let h = 30 + Math.random()*30; dObs.push({x:600,w:25,h:h}); } dObs.forEach(o=>o.x-=dSpd); dObs=dObs.filter(o=>o.x>-50); dObs.forEach(o=>{ if(dPly.x<o.x+o.w && dPly.x+dPly.w>o.x && dPly.y<240 && dPly.y+dPly.h>240-o.h){ dGameRunning=false; dCtx.fillStyle='#fff'; dCtx.font="30px monospace"; dCtx.textAlign="center"; dCtx.fillText("OYUN BİTTİ! SKOR: "+Math.floor(dSc), 300, 150); dCtx.font="20px monospace"; dCtx.fillText("Tekrar oynamak için TIKLA", 300, 180); }}); dSc+=0.15; dSpd = 6 + (dSc * 0.04); dCtx.fillStyle='#0000aa'; dCtx.fillRect(0,0,600,300); dCtx.fillStyle='#fff'; dCtx.fillRect(0,230,600,2); dCtx.drawImage(dinoImg, dPly.x, dPly.y, dPly.w, dPly.h); dObs.forEach(o=>dCtx.fillRect(o.x,230-o.h,o.w,o.h)); dCtx.font="20px monospace"; dCtx.textAlign="left"; dCtx.fillText("SKOR: "+Math.floor(dSc),20,30); }
         window.addEventListener('resize', () => { if(document.getElementById('window-paint').classList.contains('active')) resizePaintCanvas(); });
-
-        // CLIPPY LOGIC
-        const clippyMsgs = [
-            "atölyelerimiz gerçekten var",
-            "paint'te bir şeyler çizip kaydet!",
-            "naber?",
-            "atölye anıları normalde çok daha fazla:(",
-            "bize mail atmaktan veya instagramdan ulaşmaktan hiç çekinme!",
-            "shopier'den ürünlerimize bakabilirsin",
-            "arkaplanı değiştirmek için başlat'a bak."
-        ];
-        const totalGifs = 9; 
-        function changeClippyAction() {
-            const img = document.getElementById('clippy-img');
-            const randomNum = Math.floor(Math.random() * totalGifs) + 1;
-            img.src = `clippy${randomNum}.gif`;
-        }
-        function startClippy() {
-            const c = document.getElementById('clippy-container');
-            const b = document.getElementById('clippy-bubble');
-            setTimeout(() => { c.style.display = 'flex'; changeClippyAction(); setTimeout(() => { b.style.display = 'block'; }, 1000); setInterval(changeClippyAction, 8000); }, 3000);
-        }
-        function closeClippy(e) { e.stopPropagation(); document.getElementById('clippy-container').style.display = 'none'; }
-        function pokeClippy() {
-            const c = document.getElementById('clippy-container'); const txt = document.getElementById('clippy-text'); const img = document.getElementById('clippy-img');
-            c.classList.remove('clippy-float'); img.classList.add('clippy-shake'); changeClippyAction();
-            const msg = clippyMsgs[Math.floor(Math.random() * clippyMsgs.length)]; txt.innerText = msg; document.getElementById('clippy-bubble').style.display = 'block';
-            setTimeout(() => { img.classList.remove('clippy-shake'); c.classList.add('clippy-float'); }, 300);
-        }
-        startClippy();
+        
+        const clippyMsgs = ["atölyelerimiz gerçekten var", "paint'te bir şeyler çizip kaydet!", "naber?", "atölye anıları normalde çok daha fazla:(", "bize mail atmaktan veya instagramdan ulaşmaktan hiç çekinme!", "shopier'den ürünlerimize bakabilirsin", "arkaplanı değiştirmek için başlat'a bak."]; const totalGifs = 9; function changeClippyAction() { const img = document.getElementById('clippy-img'); const randomNum = Math.floor(Math.random() * totalGifs) + 1; img.src = `clippy${randomNum}.gif`; } function startClippy() { const c = document.getElementById('clippy-container'); const b = document.getElementById('clippy-bubble'); setTimeout(() => { c.style.display = 'flex'; changeClippyAction(); setTimeout(() => { b.style.display = 'block'; }, 1000); setInterval(changeClippyAction, 8000); }, 3000); } function closeClippy(e) { e.stopPropagation(); document.getElementById('clippy-container').style.display = 'none'; } function pokeClippy() { const c = document.getElementById('clippy-container'); const txt = document.getElementById('clippy-text'); const img = document.getElementById('clippy-img'); c.classList.remove('clippy-float'); img.classList.add('clippy-shake'); changeClippyAction(); const msg = clippyMsgs[Math.floor(Math.random() * clippyMsgs.length)]; txt.innerText = msg; document.getElementById('clippy-bubble').style.display = 'block'; setTimeout(() => { img.classList.remove('clippy-shake'); c.classList.add('clippy-float'); }, 300); } startClippy();
     </script>
 </body>
 </html>
