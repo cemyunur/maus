@@ -26,14 +26,12 @@
         
         /* UI Elementleri */
         #surprise-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
-        #show-timer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 7rem; color: yellow; font-weight: bold; text-shadow: 5px 5px 0px red, -5px -5px 0px blue; z-index: 50; pointer-events: none; animation: shake 0.5s infinite; }
+        #show-timer { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 15rem; color: yellow; font-weight: bold; text-shadow: 5px 5px 0px red, -5px -5px 0px blue; z-index: 50; pointer-events: none; animation: shake 0.5s infinite; }
         @keyframes shake { 0% { transform: translate(-51%, -51%); } 50% { transform: translate(-49%, -49%); } 100% { transform: translate(-51%, -51%); } }
         .bg-layer { position: absolute; top:0; left:0; width:100%; height:100%; object-fit: cover; opacity: 0.6; z-index: 1; }
         .disco-ball { position: absolute; top: -250px; left: 50%; transform: translateX(-50%); width: 200px; z-index: 10; transition: top 2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .disco-ball.drop { top: 5%; }
         .dance-floor { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); display: flex; align-items: flex-end; justify-content: center; width: 100%; max-width: 1000px; height: 100%; z-index: 20; pointer-events: none; }
-        
-        /* DANSÇI AYARLARI */
         .dancer { position: relative; object-fit: contain; }
         .d1 { width: 250px; z-index: 3; bottom: 10px; } .d2 { width: 300px; z-index: 5; bottom: -20px; } .d3 { width: 200px; z-index: 2; bottom: 40px; left: -20px; opacity: 0.9; } .d4 { width: 210px; z-index: 2; bottom: 35px; right: -20px; opacity: 0.9; }
         @media (max-width: 600px) { .d1, .d3, .d4 { display: none !important; } .d2 { width: 90%; max-width: 400px; bottom: 15%; } }
@@ -148,7 +146,7 @@
 <body>
 
     <div id="boot-screen">
-        <div style="margin-bottom:20px;">MausOS BIOS v2.5 (c) 2025</div>
+        <div style="margin-bottom:20px;">MausOS BIOS v2.6 (c) 2025</div>
         <div>CPU: Maus-98 @ 300MHz</div>
         <div>Memory Test: 640K OK</div>
         <br>
@@ -194,6 +192,7 @@
         <div class="desktop-icon" onclick="openWindow('media')"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png"><span>Atölye Anıları</span></div>
         <div class="desktop-icon" onclick="openWindow('gallery')"><img src="https://win98icons.alexmeub.com/icons/png/directory_open_file_mydocs-4.png"><span>Paint Galerisi</span></div>
         <div class="desktop-icon" onclick="openWindow('paint')"><img src="https://win98icons.alexmeub.com/icons/png/paint_file-2.png"><span>Maus Paint</span></div>
+        <div class="desktop-icon" onclick="openLink('https://www.shopier.com/maus')"><img src="https://win98icons.alexmeub.com/icons/png/briefcase-2.png"><span>Mağaza</span></div>
     </div>
 
     <div id="taskbar">
@@ -208,11 +207,9 @@
             <div class="menu-item" onclick="openWindow('archive')"><img src="https://win98icons.alexmeub.com/icons/png/directory_closed-4.png" style="width:24px;margin-right:10px;"> Geçmiş Sergiler</div>
             <div class="menu-item" onclick="triggerSurprise()" style="color:#ff0000; font-weight:bold;"><img src="https://win98icons.alexmeub.com/icons/png/msg_error-0.png" style="width:24px;margin-right:10px;"> BASMA!</div>
             <div class="menu-divider"></div>
-            
             <div class="menu-item" onclick="setRandomBackground()">
                 <img src="https://win98icons.alexmeub.com/icons/png/settings_gear-4.png" style="width:24px;margin-right:10px;"> 🎲 Rastgele Arkaplan
             </div>
-
             <div class="menu-divider"></div>
             <div class="menu-item" onclick="startDinoGame()"><img src="https://win98icons.alexmeub.com/icons/png/msg_warning-0.png" style="width:24px;margin-right:10px;"> Sistem Hatası</div>
             <div class="menu-divider"></div>
@@ -237,7 +234,7 @@
     <div class="window-container" id="window-contact"><div class="title-bar"><span>İletişim</span><div class="close-btn" onclick="closeWindow('contact')">X</div></div><div class="window-content" id="content-contact"></div></div>
     <div class="window-container" id="window-map"><div class="title-bar"><span>Maus Maps</span><div class="close-btn" onclick="closeWindow('map')">X</div></div><div class="window-content" style="padding:0; display:flex; flex-direction:column; background:#eef;"><img src="map.jpg" style="width:100%; height:auto; max-height:300px; object-fit:cover; border-bottom:2px solid #888;" alt="Harita" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div style=\'padding:20px;text-align:center\'>map.jpg yüklenemedi</div>')"><div style="padding:15px; text-align:center; background:#fff;"><p style="font-size:1.5rem; color:#008000; font-weight:bold; margin:0;">MAUS ART SPACE</p><p style="margin-top:5px;">Güvenlik Caddesi 17a, Ankara</p></div></div></div>
     
-    <div class="window-container" id="window-press"><div class="title-bar"><span>basın </span><div class="close-btn" onclick="closeWindow('press')">X</div></div><div class="window-content"><h3>Maus Art Space Basında</h3><ul><li><strong>📰 Aposto:</strong> "Ankara'nın Yeni Soluğu" - <a href="https://aposto.com/s/ankaranin-yenisi-maus-art-space" target="_blank">Oku</a></li><li><strong>📰 Artist Safe Zone:</strong> "Çember Resim Vakti" - <a href="https://www.artistsafezone.com/post/%C3%A7ember-resim-vakti-maus-art-space-in-at%C3%B6lyesinde-bize-e%C5%9Flik-edin" target="_blank">Oku</a></li><li><strong>📰 Gazete Duvar:</strong> "Ankara'da kendi halinde bir vaha" - <a href="https://www.gazeteduvar.com.tr/maus-art-space-ankarada-kendi-halinde-bir-vaha-haber-1757202" target="_blank">Oku</a></li><li><strong>📺 Instagram:</strong> "nothenews-az ünlü müzik fest!" - <a href="https://www.instagram.com/p/DF5NufRtX8S/" target="_blank">İzle</a></li></ul></div></div>
+    <div class="window-container" id="window-press"><div class="title-bar"><span>Basın Odası</span><div class="close-btn" onclick="closeWindow('press')">X</div></div><div class="window-content"><h3>Maus Art Space Basında</h3><ul><li><strong>📰 Sanat Dünyası:</strong> "Ankara'nın Yeni Soluğu" - <a href="https://aposto.com/s/ankaranin-yenisi-maus-art-space" target="_blank">Oku</a></li><li><strong>📰 Artist Safe Zone:</strong> "Çember Resim Vakti" - <a href="https://www.artistsafezone.com/post/%C3%A7ember-resim-vakti-maus-art-space-in-at%C3%B6lyesinde-bize-e%C5%9Flik-edin" target="_blank">Oku</a></li><li><strong>📰 Gazete Duvar:</strong> "Ankara'da kendi halinde bir vaha" - <a href="https://www.gazeteduvar.com.tr/maus-art-space-ankarada-kendi-halinde-bir-vaha-haber-1757202" target="_blank">Oku</a></li><li><strong>📺 Instagram:</strong> "Bizimle Tanışın" - <a href="https://www.instagram.com/p/DF5NufRtX8S/" target="_blank">İzle</a></li></ul></div></div>
     
     <div class="window-container" id="window-archive"><div class="title-bar"><span>Geçmiş Sergiler</span><div class="close-btn" onclick="closeWindow('archive')">X</div></div><div class="window-content"><ul class="archive-list"><li><span class="archive-date">14 Eylül 2024</span> Fare Açılış Sergisi</li><li><span class="archive-date">27 Aralık 2024</span> Transfer</li><li><span class="archive-date">11 Ocak 2025</span> Hatice Karakaş - Evdekiler</li><li><span class="archive-date">8 Şubat 2025</span> Sinan Hasar - Kafa Kağıdı</li><li><span class="archive-date">22 Şubat 2025</span> 9 Sergisi</li><li><span class="archive-date">11 Nisan 2025</span> Evvela Sergisi</li><li><span class="archive-date">25 Nisan 2025</span> Ev Ankara - Kapı Sergisi</li><li><span class="archive-date">10 Mayıs 2025</span> Eda Gizem Uğur - Yatırım Tavsiyesi Değildir</li><li><span class="archive-date">31 Mayıs 2025</span> Ahmet Mert Hasret - Artık Hep Birlikte Misafiriz</li><li><span class="archive-date">21 Haziran 2025</span> Ece Kaşkır & Ecem Beşir - Uyanığın Gölgesi</li><li><span class="archive-date">6 Eylül 2025</span> Fare II Sergisi</li><li><span class="archive-date">19 Eylül 2025</span> Bi'yerde Görmüştüm</li><li><span class="archive-date">10 Ekim 2025</span> Imgelem/r ve Yansımalar</li><li><span class="archive-date">31 Ekim 2025</span> Furkan Cin & Melih Uçmaz - Vahşi, Kötü ve Çirkin</li></ul></div></div>
     
@@ -280,7 +277,7 @@
     <div id="clippy-container" class="clippy-float" style="display:none; position: fixed; bottom: 70px; right: 30px; z-index: 10000; flex-direction: column; align-items: flex-end;">
         
         <div id="clippy-bubble" style="background: #ffffe1; border: 1px solid #000; border-radius: 5px; padding: 10px; margin-bottom: 5px; font-family: Tahoma, sans-serif; font-size: 12px; color: #000; box-shadow: 4px 4px 0px rgba(0,0,0,0.2); max-width: 200px; position: relative; display:none;">
-            <span id="clippy-text">selam ;-)</span>
+            <span id="clippy-text">Selam! Ben Maus.</span>
             <div style="position: absolute; bottom: -6px; right: 30px; width: 10px; height: 10px; background: #ffffe1; border-bottom: 1px solid #000; border-right: 1px solid #000; transform: rotate(45deg);"></div>
         </div>
 
@@ -651,13 +648,13 @@
 
         // CLIPPY LOGIC
         const clippyMsgs = [
-          "atölyelerimiz gerçekten var",
-          "paint'te bir şeyler çizip kaydet!", 
-          "naber?", 
-          "atölye anıları normalde çok daha fazla:(",
-          "bize mail atmaktan veya instagramdan ulaşmaktan hiç çekinme!",
-          "shopier'den ürünlerimize bakabilirsin",
-          "arkaplanı değiştirmek için başlat'a bak."
+            "atölyelerimiz gerçekten var",
+            "paint'te bir şeyler çizip kaydet!",
+            "naber?",
+            "atölye anıları normalde çok daha fazla:(",
+            "bize mail atmaktan veya instagramdan ulaşmaktan hiç çekinme!",
+            "shopier'den ürünlerimize bakabilirsin",
+            "arkaplanı değiştirmek için başlat'a bak."
         ];
         const totalGifs = 9; 
         function changeClippyAction() {
