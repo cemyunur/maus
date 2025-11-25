@@ -14,7 +14,15 @@
     <style>
         :root { --win-teal: #008080; --win-gray: #c0c0c0; --win-blue: #000080; --win-white: #ffffff; --win-black: #000000; --border-inset: inset -2px -2px #ffffff, inset 2px 2px #808080, inset -1px -1px #c0c0c0, inset 1px 1px #000000; --border-outset: inset -2px -2px #808080, inset 2px 2px #ffffff, inset -1px -1px #c0c0c0, inset 1px 1px #c0c0c0; }
         * { box-sizing: border-box; }
-        body { margin: 0; height: 100vh; overflow: hidden; background-color: var(--win-teal); font-family: 'VT323', monospace; user-select: none; transition: background-color 0.5s; touch-action: none; padding-top: env(safe-area-inset-top); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
+        body { 
+            margin: 0; height: 100vh; overflow: hidden; 
+            background-color: var(--win-teal); 
+            background-size: cover; background-position: center;
+            font-family: 'VT323', monospace; user-select: none; 
+            transition: background 0.5s; 
+            touch-action: none; 
+            padding-top: env(safe-area-inset-top); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); 
+        }
         
         /* UI Elementleri */
         #surprise-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 20000; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; }
@@ -25,71 +33,20 @@
         .disco-ball.drop { top: 5%; }
         .dance-floor { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); display: flex; align-items: flex-end; justify-content: center; width: 100%; max-width: 1000px; height: 100%; z-index: 20; pointer-events: none; }
         
-        /* DANSÇI AYARLARI (MOBİL İÇİN DÜZENLENDİ) */
+        /* DANSÇI AYARLARI */
         .dancer { position: relative; object-fit: contain; }
-        .d1 { width: 250px; z-index: 3; bottom: 10px; } 
-        .d2 { width: 300px; z-index: 5; bottom: -20px; } 
-        .d3 { width: 200px; z-index: 2; bottom: 40px; left: -20px; opacity: 0.9; } 
-        .d4 { width: 210px; z-index: 2; bottom: 35px; right: -20px; opacity: 0.9; }
+        .d1 { width: 250px; z-index: 3; bottom: 10px; } .d2 { width: 300px; z-index: 5; bottom: -20px; } .d3 { width: 200px; z-index: 2; bottom: 40px; left: -20px; opacity: 0.9; } .d4 { width: 210px; z-index: 2; bottom: 35px; right: -20px; opacity: 0.9; }
+        @media (max-width: 600px) { .d1, .d3, .d4 { display: none !important; } .d2 { width: 90%; max-width: 400px; bottom: 15%; } }
 
-        /* MOBİLDE TEK FARE KALSIN */
-        @media (max-width: 600px) {
-            .d1, .d3, .d4 { display: none !important; } /* Diğerlerini gizle */
-            .d2 { 
-                width: 90%; /* Ekranı kaplasın */
-                max-width: 400px;
-                bottom: 15%; /* Biraz yukarı al */
-            }
-        }
-
-        /* GLOW KALDIRILDI */
-        .close-show-btn { 
-            display: none; 
-            position: absolute; 
-            bottom: 50px; 
-            left: 50%; 
-            transform: translateX(-50%); 
-            padding: 15px 40px; 
-            font-size: 2rem; 
-            font-family: 'VT323', monospace; 
-            background: red; 
-            color: white; 
-            border: 4px solid yellow; 
-            cursor: pointer; 
-            z-index: 60; 
-            /* box-shadow silindi */
-            text-transform: uppercase; 
-            font-weight: bold; 
-        }
+        .close-show-btn { display: none; position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); padding: 15px 40px; font-size: 2rem; font-family: 'VT323', monospace; background: red; color: white; border: 4px solid yellow; cursor: pointer; z-index: 60; text-transform: uppercase; font-weight: bold; }
         .close-show-btn:active { transform: translateX(-50%) scale(0.95); }
-
         #crt-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 99999; pointer-events: none; }
         .crt-anim { animation: turn-off 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
         @keyframes turn-off { 0% { transform: scale(1, 1.3); opacity: 1; } 100% { transform: scale(0, 0.001); opacity: 0; } }
         
         /* Desktop & Windows */
-        #desktop { 
-            padding: 20px; 
-            display: flex; 
-            flex-direction: column; 
-            flex-wrap: wrap;        
-            align-content: flex-start; 
-            height: 85vh;           
-            gap: 10px; 
-            margin-top: 10px; 
-        }
-        .desktop-icon { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            width: 90px; 
-            height: 90px; 
-            cursor: pointer; 
-            text-align: center; 
-            color: var(--win-white); 
-            z-index: 1; 
-            margin-bottom: 5px; 
-        }
+        #desktop { padding: 20px; display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-start; height: 85vh; gap: 10px; margin-top: 10px; }
+        .desktop-icon { display: flex; flex-direction: column; align-items: center; width: 90px; height: 90px; cursor: pointer; text-align: center; color: var(--win-white); z-index: 1; margin-bottom: 5px; }
         .desktop-icon img { width: 48px; height: 48px; margin-bottom: 5px; image-rendering: pixelated; filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.5)); }
         .desktop-icon span { background-color: var(--win-teal); padding: 2px 5px; font-size: 1.1rem; line-height: 1.1; }
         .desktop-icon:active img { opacity: 0.7; filter: grayscale(100%); }
@@ -164,6 +121,12 @@
         
         /* ADMIN ONAY OVERLAY */
         #admin-approve-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #008080; z-index: 999999; flex-direction: column; align-items: center; justify-content: center; color: white; font-size: 2rem; text-align: center; }
+
+        /* CLIPPY STYLES */
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-5px); } 100% { transform: translateY(0px); } }
+        @keyframes woggle { 0% { transform: rotate(0deg); } 25% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } 75% { transform: rotate(-5deg); } 100% { transform: rotate(0deg); } }
+        .clippy-float { animation: float 3s ease-in-out infinite; }
+        .clippy-shake { animation: woggle 0.3s ease-in-out; }
     </style>
 </head>
 <body>
@@ -220,13 +183,7 @@
             <div class="menu-item" onclick="openWindow('archive')"><img src="https://win98icons.alexmeub.com/icons/png/directory_closed-4.png" style="width:24px;margin-right:10px;"> Geçmiş Sergiler</div>
             <div class="menu-item" onclick="triggerSurprise()" style="color:#ff0000; font-weight:bold;"><img src="https://win98icons.alexmeub.com/icons/png/msg_error-0.png" style="width:24px;margin-right:10px;"> BASMA!</div>
             <div class="menu-divider"></div>
-            <div class="menu-item"><img src="https://win98icons.alexmeub.com/icons/png/settings_gear-4.png" style="width:24px;margin-right:10px;"> Ayarlar ►
-                <div class="submenu">
-                    <div class="menu-item" onclick="changeTheme('#008080')">Klasik Teal</div>
-                    <div class="menu-item" onclick="changeTheme('#000000')">Hacker Siyah</div>
-                    <div class="menu-item" onclick="changeTheme('#ff0055')">Maus Pembe</div>
-                </div>
-            </div>
+            <div class="menu-item" onclick="setRandomBackground()"><img src="https://win98icons.alexmeub.com/icons/png/settings_gear-4.png" style="width:24px;margin-right:10px;"> 🎲 Rastgele Arkaplan</div>
             <div class="menu-divider"></div>
             <div class="menu-item" onclick="startDinoGame()"><img src="https://win98icons.alexmeub.com/icons/png/msg_warning-0.png" style="width:24px;margin-right:10px;"> Sistem Hatası</div>
             <div class="menu-divider"></div>
@@ -291,6 +248,19 @@
 
     <div class="window-container" id="window-viewer" style="height:80vh; width:90%; max-width:800px;"><div class="title-bar"><span id="viewer-title">Resim</span><div class="close-btn" onclick="closeViewer()">X</div></div><div class="window-content" style="padding:0; display:flex; background:#fff;"><div class="img-display-area"><img id="viewer-img" src=""></div><div class="img-controls"><button class="retro-btn" onclick="closeViewer()">RESMİ KAPAT</button></div></div></div>
 
+    <div id="clippy-container" class="clippy-float" style="display:none; position: fixed; bottom: 20px; right: 20px; z-index: 10000; flex-direction: column; align-items: flex-end;">
+        
+        <div id="clippy-bubble" style="background: #ffffe1; border: 1px solid #000; border-radius: 5px; padding: 10px; margin-bottom: 5px; font-family: Tahoma, sans-serif; font-size: 12px; color: #000; box-shadow: 4px 4px 0px rgba(0,0,0,0.2); max-width: 200px; position: relative; display:none;">
+            <span id="clippy-text">Selam! Ben Maus.</span>
+            <div style="position: absolute; bottom: -6px; right: 30px; width: 10px; height: 10px; background: #ffffe1; border-bottom: 1px solid #000; border-right: 1px solid #000; transform: rotate(45deg);"></div>
+        </div>
+
+        <div style="position: relative; cursor: pointer;" onclick="pokeClippy()">
+            <img id="clippy-img" src="clippy1.gif" style="width: 100px; height: 100px; object-fit: contain;" alt="Clippy">
+            <div onclick="closeClippy(event)" style="position: absolute; top: -10px; right: 0px; background: #c0c0c0; color: black; border: 2px solid #fff; border-bottom-color: #000; border-right-color: #000; width: 20px; height: 20px; font-size: 14px; text-align: center; line-height: 16px; cursor: pointer; font-weight: bold; box-shadow: 1px 1px 0px #000;">X</div>
+        </div>
+    </div>
+
     <script>
         // -------------------------------------------------------------
         // FIREBASE & TELEGRAM AYARLARI
@@ -315,13 +285,40 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        // --- RASTGELE ARKAPLAN FONKSİYONU ---
+        const bgs = [
+            {type:'color', val:'#008080'},
+            {type:'color', val:'#000000'},
+            {type:'color', val:'#ff0055'},
+            {type:'image', val:'arkaplan1.jpg'},
+            {type:'image', val:'arkaplan2.jpg'},
+            {type:'image', val:'arkaplan3.jpg'}
+        ];
+
+        function setRandomBackground() {
+            const choice = bgs[Math.floor(Math.random() * bgs.length)];
+            if (choice.type === 'color') {
+                document.body.style.backgroundImage = '';
+                document.body.style.backgroundColor = choice.val;
+                document.querySelectorAll('.desktop-icon span').forEach(s => s.style.backgroundColor = choice.val);
+            } else {
+                document.body.style.backgroundColor = '#000'; 
+                document.body.style.backgroundImage = `url('${choice.val}')`;
+                document.querySelectorAll('.desktop-icon span').forEach(s => s.style.backgroundColor = 'transparent');
+            }
+        }
+
+        function changeTheme(c) { 
+            document.body.style.backgroundImage = '';
+            document.body.style.backgroundColor=c; 
+            document.querySelectorAll('.desktop-icon span').forEach(s=>s.style.backgroundColor=c); 
+        }
+
         // --- OTO ADMIN AÇMA VE URL ONAY ---
         const urlParams = new URLSearchParams(window.location.search);
         
-        // 1. Admin Parametresi Varsa Paneli Aç (MOBİL GİRİŞ KOLAYLIĞI)
         if (urlParams.has('admin')) {
             window.onload = function() { 
-                // Diğer her şeyi kapat, sadece admini aç
                 closeAllWindows();
                 const w = document.getElementById('window-admin');
                 w.classList.add('active');
@@ -329,7 +326,6 @@
             }
         }
 
-        // 2. Onay Parametresi Varsa Onayla
         const approveId = urlParams.get('approve');
         if (approveId) {
             document.getElementById('admin-approve-overlay').style.display = 'flex';
@@ -536,7 +532,6 @@
         setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}), 1000);
         function toggleStart() { const m = document.getElementById('start-menu'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; document.querySelector('.start-btn').classList.toggle('active'); }
         document.getElementById('desktop').addEventListener('click', () => { document.getElementById('start-menu').style.display = 'none'; document.querySelector('.start-btn').classList.remove('active'); });
-        function changeTheme(c) { document.body.style.backgroundColor=c; document.querySelectorAll('.desktop-icon span').forEach(s=>s.style.backgroundColor=c); }
         function openLink(url) { window.open(url, '_blank'); }
         function systemReset() { document.getElementById('crt-overlay').style.display='block'; document.getElementById('crt-overlay').classList.add('crt-anim'); setTimeout(()=>location.reload(), 600); }
         function closeAllWindows() { document.querySelectorAll('.window-container').forEach(w => { if(w.id !== 'window-viewer') w.classList.remove('active'); }); closeSurprise(); closeDino(); }
@@ -579,6 +574,36 @@
         dCtx.drawImage(dinoImg, dPly.x, dPly.y, dPly.w, dPly.h); 
         dObs.forEach(o=>dCtx.fillRect(o.x,230-o.h,o.w,o.h)); dCtx.font="20px monospace"; dCtx.textAlign="left"; dCtx.fillText("SKOR: "+Math.floor(dSc),20,30); }
         window.addEventListener('resize', () => { if(document.getElementById('window-paint').classList.contains('active')) resizePaintCanvas(); });
+
+        // CLIPPY LOGIC
+        const clippyMsgs = [
+            "Görünüşe göre sanat seviyorsun! 🎨",
+            "Paint'te bir şeyler çizmek ister misin?",
+            "Maus Art Space Ankara'nın en havalı yeri!",
+            "Benim adım Ataç, senin adın ne?",
+            "Dinozor oyununda rekorun kaç?",
+            "Beni dürtüp durma gıdıklanıyorum!",
+            "Arkaplanı değiştirmek için Başlat'a bak."
+        ];
+        const totalGifs = 9; 
+        function changeClippyAction() {
+            const img = document.getElementById('clippy-img');
+            const randomNum = Math.floor(Math.random() * totalGifs) + 1;
+            img.src = `clippy${randomNum}.gif`;
+        }
+        function startClippy() {
+            const c = document.getElementById('clippy-container');
+            const b = document.getElementById('clippy-bubble');
+            setTimeout(() => { c.style.display = 'flex'; changeClippyAction(); setTimeout(() => { b.style.display = 'block'; }, 1000); setInterval(changeClippyAction, 8000); }, 3000);
+        }
+        function closeClippy(e) { e.stopPropagation(); document.getElementById('clippy-container').style.display = 'none'; }
+        function pokeClippy() {
+            const c = document.getElementById('clippy-container'); const txt = document.getElementById('clippy-text'); const img = document.getElementById('clippy-img');
+            c.classList.remove('clippy-float'); img.classList.add('clippy-shake'); changeClippyAction();
+            const msg = clippyMsgs[Math.floor(Math.random() * clippyMsgs.length)]; txt.innerText = msg; document.getElementById('clippy-bubble').style.display = 'block';
+            setTimeout(() => { img.classList.remove('clippy-shake'); c.classList.add('clippy-float'); }, 300);
+        }
+        startClippy();
     </script>
 </body>
 </html>
