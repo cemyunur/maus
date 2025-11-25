@@ -100,56 +100,21 @@
         .close-btn:active { box-shadow: var(--border-inset); }
         .window-content { padding: 15px; overflow-y: auto; flex-grow: 1; font-size: 1.2rem; line-height: 1.4; }
         
-        /* Paint & Gallery - SCROLL SORUNU ÇÖZÜLDÜ */
-        #window-paint { 
-            width: 95vw; 
-            height: auto; 
-            max-height: 80vh; /* Pencere boyutu sabit */
-            max-width: 600px; 
-            display: flex;
-            flex-direction: column;
-        }
-        #paint-window .window-content { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 8px; 
-            padding: 4px; 
-            overflow: hidden; /* İçerik taşmasın */
-            background: var(--win-gray); 
-            height: 100%; 
-            box-sizing: border-box; 
-        }
-        .canvas-frame { 
-            flex: 1; /* Tuval kalan tüm boşluğu doldursun */
-            width: 100%;
-            min-height: 0; /* Küçülmeye izin ver */
-            border: 2px solid; 
-            border-color: #808080 #ffffff #ffffff #808080; 
-            background: white; 
-            cursor: crosshair; 
-            touch-action: none; 
-        }
+        /* Paint & Gallery */
+        #window-paint { width: 95vw; height: auto; max-width: 600px; }
+        #paint-window .window-content { display: flex; flex-direction: column; gap: 8px; padding: 4px; overflow: hidden; background: var(--win-gray); height: 100%; box-sizing: border-box; }
+        .canvas-frame { width: 100%; aspect-ratio: 1 / 1; border: 2px solid; border-color: #808080 #ffffff #ffffff #808080; background: white; cursor: crosshair; touch-action: none; }
         #paintCanvas { width: 100%; height: 100%; display: block; }
-        
-        .paint-toolbar { 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 10px; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 4px; 
-            background: #c0c0c0; 
-            border-top: 1px solid #fff; 
-            flex-shrink: 0; /* Toolbar asla küçülmesin */
-        }
+        .paint-toolbar { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; padding: 4px; background: #c0c0c0; border-top: 1px solid #fff; }
         .tool-group { display: flex; gap: 4px; align-items: center; }
         
+        /* PAINT İSİM KUTUSU DÜZENLEMESİ (DAHA BÜYÜK VE BELİRGİN) */
         .paint-name-input { 
             width: 140px; 
             height: 26px;
             font-family: inherit; 
             padding: 4px; 
-            border: 2px inset #fff; 
+            border: 2px inset #fff; /* İçeri göçük efekt */
             background: #fff;
             font-size: 1.1rem;
             color: #000;
@@ -267,7 +232,7 @@
     <div id="start-menu">
         <div class="start-sidebar">MAUS 98</div>
         <div class="start-items">
-            <div class="menu-item" onclick="openWindow('press')"><img src="https://win98icons.alexmeub.com/icons/png/calendar-1.png" style="width:24px;margin-right:10px;"> <span id="lbl-press">Basın</span></div>
+            <div class="menu-item" onclick="openWindow('press')"><img src="https://win98icons.alexmeub.com/icons/png/calendar-1.png" style="width:24px;margin-right:10px;"> <span id="lbl-press">basın</span></div>
             <div class="menu-item" onclick="openWindow('archive')"><img src="https://win98icons.alexmeub.com/icons/png/directory_closed-4.png" style="width:24px;margin-right:10px;"> <span id="lbl-archive">Geçmiş Sergiler</span></div>
             <div class="menu-item" onclick="triggerSurprise()" style="color:#ff0000; font-weight:bold;"><img src="https://win98icons.alexmeub.com/icons/png/msg_error-0.png" style="width:24px;margin-right:10px;"> <span id="lbl-dontclick">BASMA!</span></div>
             <div class="menu-divider"></div>
@@ -298,7 +263,7 @@
     <div class="window-container" id="window-contact"><div class="title-bar"><span id="title-contact">İletişim</span><div class="close-btn" onclick="closeWindow('contact')">X</div></div><div class="window-content" id="content-contact"></div></div>
     <div class="window-container" id="window-map"><div class="title-bar"><span>Maus Maps</span><div class="close-btn" onclick="closeWindow('map')">X</div></div><div class="window-content" style="padding:0; display:flex; flex-direction:column; background:#eef;"><img src="map.jpg" style="width:100%; height:auto; max-height:300px; object-fit:cover; border-bottom:2px solid #888;" alt="Harita" onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend', '<div style=\'padding:20px;text-align:center\'>map.jpg yüklenemedi</div>')"><div style="padding:15px; text-align:center; background:#fff;"><p style="font-size:1.5rem; color:#008000; font-weight:bold; margin:0;">MAUS ART SPACE</p><p style="margin-top:5px;">Güvenlik Caddesi 17a, Ankara</p></div></div></div>
     
-    <div class="window-container" id="window-press"><div class="title-bar"><span id="title-press">Basın Odası</span><div class="close-btn" onclick="closeWindow('press')">X</div></div><div class="window-content"><h3 id="head-press">Maus Art Space Basında</h3><ul><li><strong>📰 Aposto:</strong> "Ankara'nın Yeni Soluğu" - <a href="https://aposto.com/s/ankaranin-yenisi-maus-art-space" target="_blank">Oku</a></li><li><strong>📰 Artist Safe Zone:</strong> "Çember Resim Vakti" - <a href="https://www.artistsafezone.com/post/%C3%A7ember-resim-vakti-maus-art-space-in-at%C3%B6lyesinde-bize-e%C5%9Flik-edin" target="_blank">Oku</a></li><li><strong>📰 Gazete Duvar:</strong> "Ankara'da kendi halinde bir vaha" - <a href="https://www.gazeteduvar.com.tr/maus-art-space-ankarada-kendi-halinde-bir-vaha-haber-1757202" target="_blank">Oku</a></li><li><strong>📺 Instagram:</strong> "Bizimle Tanışın" - <a href="https://www.instagram.com/p/DF5NufRtX8S/" target="_blank">İzle</a></li></ul></div></div>
+    <div class="window-container" id="window-press"><div class="title-bar"><span id="title-press">Basın</span><div class="close-btn" onclick="closeWindow('press')">X</div></div><div class="window-content"><h3 id="head-press">maus art space hakkında</h3><ul><li><strong>📰 Aposto:</strong> "Ankara'nın Yeni Soluğu" - <a href="https://aposto.com/s/ankaranin-yenisi-maus-art-space" target="_blank">Oku</a></li><li><strong>📰 Artist Safe Zone:</strong> "Çember Resim Vakti" - <a href="https://www.artistsafezone.com/post/%C3%A7ember-resim-vakti-maus-art-space-in-at%C3%B6lyesinde-bize-e%C5%9Flik-edin" target="_blank">Oku</a></li><li><strong>📰 Gazete Duvar:</strong> "Ankara'da kendi halinde bir vaha" - <a href="https://www.gazeteduvar.com.tr/maus-art-space-ankarada-kendi-halinde-bir-vaha-haber-1757202" target="_blank">Oku</a></li><li><strong>📺 Instagram:</strong> "Bizimle Tanışın" - <a href="https://www.instagram.com/p/DF5NufRtX8S/" target="_blank">İzle</a></li></ul></div></div>
     
     <div class="window-container" id="window-archive"><div class="title-bar"><span id="title-archive">Geçmiş Sergiler</span><div class="close-btn" onclick="closeWindow('archive')">X</div></div><div class="window-content"><ul class="archive-list"><li><span class="archive-date">14 Eylül 2024</span> Fare Açılış Sergisi</li><li><span class="archive-date">27 Aralık 2024</span> Transfer</li><li><span class="archive-date">11 Ocak 2025</span> Hatice Karakaş - Evdekiler</li><li><span class="archive-date">8 Şubat 2025</span> Sinan Hasar - Kafa Kağıdı</li><li><span class="archive-date">22 Şubat 2025</span> 9 Sergisi</li><li><span class="archive-date">11 Nisan 2025</span> Evvela Sergisi</li><li><span class="archive-date">25 Nisan 2025</span> Ev Ankara - Kapı Sergisi</li><li><span class="archive-date">10 Mayıs 2025</span> Eda Gizem Uğur - Yatırım Tavsiyesi Değildir</li><li><span class="archive-date">31 Mayıs 2025</span> Ahmet Mert Hasret - Artık Hep Birlikte Misafiriz</li><li><span class="archive-date">21 Haziran 2025</span> Ece Kaşkır & Ecem Beşir - Uyanığın Gölgesi</li><li><span class="archive-date">6 Eylül 2025</span> Fare II Sergisi</li><li><span class="archive-date">19 Eylül 2025</span> Bi'yerde Görmüştüm</li><li><span class="archive-date">10 Ekim 2025</span> Imgelem/r ve Yansımalar</li><li><span class="archive-date">31 Ekim 2025</span> Furkan Cin & Melih Uçmaz - Vahşi, Kötü ve Çirkin</li></ul></div></div>
     
@@ -340,7 +305,7 @@
 
     <div id="clippy-container" class="clippy-float" style="display:none; position: fixed; bottom: 70px; right: 30px; z-index: 10000; flex-direction: column; align-items: flex-end;">
         <div id="clippy-bubble" style="background: #ffffe1; border: 1px solid #000; border-radius: 5px; padding: 10px; margin-bottom: 5px; font-family: Tahoma, sans-serif; font-size: 12px; color: #000; box-shadow: 4px 4px 0px rgba(0,0,0,0.2); max-width: 200px; position: relative; display:none;">
-            <span id="clippy-text">Selam! Ben Maus.</span>
+            <span id="clippy-text">Selam!</span>
             <div style="position: absolute; bottom: -6px; right: 30px; width: 10px; height: 10px; background: #ffffe1; border-bottom: 1px solid #000; border-right: 1px solid #000; transform: rotate(45deg);"></div>
         </div>
         <div style="position: relative; cursor: pointer;" onclick="pokeClippy()">
@@ -520,7 +485,7 @@
                             formData.append("photo", blob, `${painterName}_maus_cizim.png`);
                             formData.append("parse_mode", "HTML");
                             fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData }).then(() => {
-                                alert("✅ Çizim yöneticiye gönderildi!");
+                                alert("✅ Çizim gönderildi!");
                                 btn.innerText = "GÖNDERİLDİ";
                                 setTimeout(() => { btn.innerText = originalText; btn.disabled = false; clearPaint(); document.getElementById('painter-name').value=''; }, 2000);
                             });
@@ -548,19 +513,8 @@
 
         const pCanvas = document.getElementById('paintCanvas'); const pCtx = pCanvas.getContext('2d');
         let isDrawing=false, lastX=0, lastY=0, pColor='#000', pAlpha=1, isEraser=false;
-        function resizePaintCanvas() { 
-            const containerWidth = pCanvas.parentElement.clientWidth; 
-            pCanvas.width = containerWidth; 
-            pCanvas.height = containerWidth; 
-            updateContext(); 
-        }
-        function updateContext() { 
-            pCtx.lineWidth = isEraser?20:4; 
-            // FIX: Transparent mode uses 'butt' to avoid dark dots
-            pCtx.lineCap = (pAlpha < 1) ? 'butt' : 'round'; 
-            pCtx.strokeStyle = isEraser?'#ffffff':pColor; 
-            pCtx.globalAlpha = isEraser?1:pAlpha; 
-        }
+        function resizePaintCanvas() { const containerWidth = pCanvas.parentElement.clientWidth; pCanvas.width = containerWidth; pCanvas.height = containerWidth; updateContext(); }
+        function updateContext() { pCtx.lineWidth = isEraser?20:4; pCtx.lineCap='round'; pCtx.strokeStyle = isEraser?'#ffffff':pColor; pCtx.globalAlpha = isEraser?1:pAlpha; }
         window.setColor = (c,b) => { isEraser=false; pColor=c; document.querySelectorAll('.color-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); updateContext(); }
         window.setOpacity = (a,b) => { isEraser=false; pAlpha=a; document.querySelectorAll('.alpha-btn').forEach(x=>x.classList.remove('active')); b.classList.add('active'); updateContext(); }
         window.setEraser = () => { isEraser=true; updateContext(); }
@@ -587,6 +541,6 @@
         window.addEventListener('resize', () => { if(document.getElementById('window-paint').classList.contains('active')) resizePaintCanvas(); });
         
         const clippyMsgs = ["atölyelerimiz gerçekten var", "paint'te bir şeyler çizip kaydet!", "naber?", "atölye anıları normalde çok daha fazla:(", "bize mail atmaktan veya instagramdan ulaşmaktan hiç çekinme!", "shopier'den ürünlerimize bakabilirsin", "arkaplanı değiştirmek için başlat'a bak."]; const totalGifs = 9; function changeClippyAction() { const img = document.getElementById('clippy-img'); const randomNum = Math.floor(Math.random() * totalGifs) + 1; img.src = `clippy${randomNum}.gif`; } function startClippy() { const c = document.getElementById('clippy-container'); const b = document.getElementById('clippy-bubble'); setTimeout(() => { c.style.display = 'flex'; changeClippyAction(); setTimeout(() => { b.style.display = 'block'; }, 1000); setInterval(changeClippyAction, 8000); }, 3000); } function closeClippy(e) { e.stopPropagation(); document.getElementById('clippy-container').style.display = 'none'; } function pokeClippy() { const c = document.getElementById('clippy-container'); const txt = document.getElementById('clippy-text'); const img = document.getElementById('clippy-img'); c.classList.remove('clippy-float'); img.classList.add('clippy-shake'); changeClippyAction(); const msg = clippyMsgs[Math.floor(Math.random() * clippyMsgs.length)]; txt.innerText = msg; document.getElementById('clippy-bubble').style.display = 'block'; setTimeout(() => { img.classList.remove('clippy-shake'); c.classList.add('clippy-float'); }, 300); } startClippy();
-    </script>
+    </script>
 </body>
 </html>
