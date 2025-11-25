@@ -31,12 +31,22 @@
         .crt-anim { animation: turn-off 0.55s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
         @keyframes turn-off { 0% { transform: scale(1, 1.3); opacity: 1; } 100% { transform: scale(0, 0.001); opacity: 0; } }
         
-        /* Desktop & Windows */
-        #desktop { padding: 20px; display: flex; flex-direction: column; gap: 15px; align-items: flex-start; flex-wrap: wrap; height: 85vh; margin-top: 10px; }
+        /* Desktop & Windows (SOLA DAYAMA DÜZELTMESİ YAPILDI) */
+        #desktop { 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; /* Yukarıdan aşağı */
+            flex-wrap: wrap;        /* Sığmazsa yan sütuna */
+            align-content: flex-start; /* Sütunları sola yapıştır */
+            gap: 15px; 
+            height: 85vh; 
+            margin-top: 10px; 
+        }
         .desktop-icon { display: flex; flex-direction: column; align-items: center; width: 90px; cursor: pointer; text-align: center; color: var(--win-white); z-index: 1; margin-bottom: 5px; }
         .desktop-icon img { width: 48px; height: 48px; margin-bottom: 5px; image-rendering: pixelated; filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.5)); }
         .desktop-icon span { background-color: var(--win-teal); padding: 2px 5px; font-size: 1.1rem; line-height: 1.1; }
         .desktop-icon:active img { opacity: 0.7; filter: grayscale(100%); }
+        
         #taskbar { position: fixed; bottom: 0; left: 0; width: 100%; height: auto; min-height: 40px; background-color: var(--win-gray); box-shadow: var(--border-outset); display: flex; justify-content: space-between; align-items: center; padding: 4px 4px calc(4px + env(safe-area-inset-bottom)) 4px; z-index: 9999; }
         .start-btn { display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 10px; background-color: var(--win-gray); box-shadow: var(--border-outset); font-weight: bold; font-size: 1.2rem; cursor: pointer; }
         .start-btn.active { box-shadow: var(--border-inset); background: #ddd; }
@@ -87,6 +97,9 @@
         .event-date { font-weight: bold; color: var(--win-blue); }
         .buy-btn { background: #008000; color: white; text-decoration: none; padding: 5px 10px; font-size: 1rem; box-shadow: var(--border-outset); cursor: pointer; }
         .buy-btn:active { box-shadow: var(--border-inset); }
+        .admin-login { display: flex; flex-direction: column; gap: 10px; align-items: center; padding: 20px; }
+        .admin-input { width: 95%; padding: 5px; font-family: inherit; margin-bottom: 5px; border: 2px solid #888; border-style: inset; }
+        .admin-list-item { background: #fff; border: 1px solid #888; padding: 5px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
         #media-content, #gallery-content { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 20px; padding: 20px; background-color: #fff; align-items: start; justify-items: center; }
         .win-file { display: flex; flex-direction: column; align-items: center; width: 100%; cursor: pointer; padding: 5px; border: 1px solid transparent; }
         .win-file:hover { background-color: rgba(0, 0, 128, 0.1); border: 1px dotted #888; }
@@ -235,9 +248,6 @@
             measurementId: "G-87744QJ9GD"
         };
         
-        // -------------------------------------------------------------
-        // TELEGRAM GÜVENLİK AYARI (Token Parçalama)
-        // -------------------------------------------------------------
         const tPart1 = "8356360725"; 
         const tPart2 = ":AAGuomCF8ss0lk09M5ZJav-Q0dGZ4e5q9bk"; 
         
@@ -303,7 +313,7 @@
         }
         loadFirebaseEvents();
 
-        // --- ÇİZİM GÖNDERME (BEYAZ ARKA PLAN DÜZELTMESİ) ---
+        // --- ÇİZİM GÖNDERME ---
         window.processDrawing = () => {
             const painterName = document.getElementById('painter-name').value || "Anonim";
             
@@ -327,14 +337,9 @@
                         tempCanvas.width = pCanvas.width;
                         tempCanvas.height = pCanvas.height;
                         
-                        // 1. BEYAZ ZEMİN
                         ctx.fillStyle = "#FFFFFF";
                         ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-                        
-                        // 2. ÇİZİM
                         ctx.drawImage(tempImg, 0, 0);
-                        
-                        // 3. JPEG ÇEVİRME (0.5 Kalite)
                         const optimizedBase64 = tempCanvas.toDataURL('image/jpeg', 0.5); 
 
                         db.collection("gallery").add({
