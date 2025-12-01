@@ -63,7 +63,7 @@
     </script>
 
     <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="apple-touch-icon" href="favicon.png"> ```
+    <link rel="apple-touch-icon" href="favicon.png"> 
 
     <style>
         :root { --win-teal: #008080; --win-gray: #c0c0c0; --win-blue: #000080; --win-white: #ffffff; --win-black: #000000; --border-inset: inset -2px -2px #ffffff, inset 2px 2px #808080, inset -1px -1px #c0c0c0, inset 1px 1px #000000; --border-outset: inset -2px -2px #808080, inset 2px 2px #ffffff, inset -1px -1px #c0c0c0, inset 1px 1px #c0c0c0; }
@@ -629,70 +629,6 @@
     }
 </style>
 
-<script>
-    function createSnowflake() {
-        const snow = document.createElement('div');
-        snow.classList.add('snowflake');
-        
-        // SADECE NOKTA KARAKTERİ
-        snow.innerText = '.'; 
 
-        // Rastgele konum
-        snow.style.left = Math.random() * 100 + 'vw';
-        
-        // Nokta karakteri küçük olduğu için fontu biraz büyük tutuyoruz ki görünsün
-        // 30px ile 60px arası (Ekranda 3-4 piksel gibi görünür)
-        snow.style.fontSize = (Math.random() * 30 + 30) + 'px'; 
-        
-        snow.style.opacity = Math.random() * 0.7 + 0.3; 
-
-        // Düşüş hızı
-        const duration = Math.random() * 3 + 2; 
-
-        document.body.appendChild(snow);
-
-        let start = null;
-        function fall(timestamp) {
-            if (!start) start = timestamp;
-            const progress = (timestamp - start) / (duration * 1000);
-            
-            // Taskbar'ın hemen üstüne inmesi için %94 civarı
-            const topPos = Math.min(progress * 100, 94); 
-            snow.style.top = topPos + 'vh';
-
-            // Rüzgar efekti
-            const swing = Math.sin(progress * 5) * 1.5; 
-            snow.style.transform = `translateX(${swing}vw)`;
-
-            if (progress < 1) {
-                if (document.body.contains(snow)) { 
-                    requestAnimationFrame(fall);
-                }
-            } else {
-                // Yere indi
-                snow.classList.add('landed');
-                
-                // 4 saniye sonra erisin
-                setTimeout(() => {
-                    if (document.body.contains(snow)) {
-                        snow.style.opacity = '0';
-                        setTimeout(() => snow.remove(), 2000);
-                    }
-                }, 4000);
-            }
-        }
-        requestAnimationFrame(fall);
-
-        // Tıklama Olayı
-        snow.addEventListener('click', (e) => {
-            e.stopPropagation(); 
-            snow.classList.add('poof-anim');
-            setTimeout(() => snow.remove(), 200);
-        });
-    }
-
-    // Çok sık yağmasın, tane tane yağsın (300ms)
-    setInterval(createSnowflake, 300);
-    </script>
 </body>
 </html>
