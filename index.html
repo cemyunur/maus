@@ -596,5 +596,103 @@
         
         const clippyMsgs = ["atölyelerimiz gerçekten var", "paint'te bir şeyler çizip kaydet!", "naber?", "atölye anıları normalde çok daha fazla:(", "bize mail atmaktan veya instagramdan ulaşmaktan hiç çekinme!", "shopier'den ürünlerimize bakabilirsin", "arkaplanı değiştirmek için başlat'a bak."]; const totalGifs = 9; function changeClippyAction() { const img = document.getElementById('clippy-img'); const randomNum = Math.floor(Math.random() * totalGifs) + 1; img.src = `clippy${randomNum}.gif`; } function startClippy() { const c = document.getElementById('clippy-container'); const b = document.getElementById('clippy-bubble'); setTimeout(() => { c.style.display = 'flex'; changeClippyAction(); setTimeout(() => { b.style.display = 'block'; }, 1000); setInterval(changeClippyAction, 8000); }, 3000); } function closeClippy(e) { e.stopPropagation(); document.getElementById('clippy-container').style.display = 'none'; } function pokeClippy() { const c = document.getElementById('clippy-container'); const txt = document.getElementById('clippy-text'); const img = document.getElementById('clippy-img'); c.classList.remove('clippy-float'); img.classList.add('clippy-shake'); changeClippyAction(); const msg = clippyMsgs[Math.floor(Math.random() * clippyMsgs.length)]; txt.innerText = msg; document.getElementById('clippy-bubble').style.display = 'block'; setTimeout(() => { img.classList.remove('clippy-shake'); c.classList.add('clippy-float'); }, 300); } startClippy();
     </script>
+
+    <style>
+    .snowflake {
+        position: fixed;
+        top: -20px;
+        color: #fff;          /* Yazı rengi beyaz */
+        font-family: sans-serif; 
+        font-weight: bold;    /* Kalın nokta */
+        cursor: pointer;
+        z-index: 99999; 
+        user-select: none;
+        pointer-events: auto; 
+        line-height: 1;
+        text-shadow: 0 0 2px rgba(255,255,255,0.8); /* Hafif parlama */
+    }
+
+    /* Yere düşünce ezilme efekti */
+    .snowflake.landed {
+        transform: scaleY(0.2) scaleX(1.5); /* İyice yassılaşsın */
+        transition: opacity 2s;
+    }
+
+    /* Tıklayınca patlama */
+    .poof-anim {
+        animation: poof 0.2s forwards;
+    }
+
+    @keyframes poof {
+        0% { transform: scale(1); opacity: 1; }
+        100% { transform: scale(3); opacity: 0; }
+    }
+</style>
+
+<script>
+    function createSnowflake() {
+        const snow = document.createElement('div');
+        snow.classList.add('snowflake');
+        
+        // SADECE NOKTA KARAKTERİ
+        snow.innerText = '.'; 
+
+        // Rastgele konum
+        snow.style.left = Math.random() * 100 + 'vw';
+        
+        // Nokta karakteri küçük olduğu için fontu biraz büyük tutuyoruz ki görünsün
+        // 30px ile 60px arası (Ekranda 3-4 piksel gibi görünür)
+        snow.style.fontSize = (Math.random() * 30 + 30) + 'px'; 
+        
+        snow.style.opacity = Math.random() * 0.7 + 0.3; 
+
+        // Düşüş hızı
+        const duration = Math.random() * 3 + 2; 
+
+        document.body.appendChild(snow);
+
+        let start = null;
+        function fall(timestamp) {
+            if (!start) start = timestamp;
+            const progress = (timestamp - start) / (duration * 1000);
+            
+            // Taskbar'ın hemen üstüne inmesi için %94 civarı
+            const topPos = Math.min(progress * 100, 94); 
+            snow.style.top = topPos + 'vh';
+
+            // Rüzgar efekti
+            const swing = Math.sin(progress * 5) * 1.5; 
+            snow.style.transform = `translateX(${swing}vw)`;
+
+            if (progress < 1) {
+                if (document.body.contains(snow)) { 
+                    requestAnimationFrame(fall);
+                }
+            } else {
+                // Yere indi
+                snow.classList.add('landed');
+                
+                // 4 saniye sonra erisin
+                setTimeout(() => {
+                    if (document.body.contains(snow)) {
+                        snow.style.opacity = '0';
+                        setTimeout(() => snow.remove(), 2000);
+                    }
+                }, 4000);
+            }
+        }
+        requestAnimationFrame(fall);
+
+        // Tıklama Olayı
+        snow.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            snow.classList.add('poof-anim');
+            setTimeout(() => snow.remove(), 200);
+        });
+    }
+
+    // Çok sık yağmasın, tane tane yağsın (300ms)
+    setInterval(createSnowflake, 300);
+    </script>
 </body>
 </html>
