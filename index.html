@@ -484,13 +484,42 @@
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('admin')) {
             window.onload = function() { closeAllWindows(); document.getElementById('window-admin').classList.add('active'); document.getElementById('window-admin').style.zIndex = 9999; }
-        }
+        // --- GÜVENLİ ONAY SİSTEMİ ---
         const approveId = urlParams.get('approve');
         if (approveId) {
-            document.getElementById('admin-approve-overlay').style.display = 'flex';
-            db.collection("gallery").doc(approveId).update({ status: "approved" })
-            .then(() => { document.getElementById('admin-approve-overlay').innerHTML = "<h1>✅ ONAYLANDI!</h1><p>Çizim galeride yayınlandı. Bu pencereyi kapatabilirsiniz.</p>"; })
-            .catch((error) => { console.error("Hata:", error); document.getElementById('admin-approve-overlay').innerHTML = "<h1>❌ HATA!</h1><p>"+error.message+"</p>"; });
+            const overlay = document.getElementById('admin-approve-overlay');
+            overlay.style.display = 'flex';
+            // Şifre ekranını göster
+            overlay.innerHTML = `
+                <div style="background:white; color:black; padding:20px; border:4px solid black; text-align:center;">
+                    <h3>🔒 GÜVENLİK KONTROLÜ</h3>
+                    <p>Çizimi onaylamak için Admin şifresini gir:</p>
+                    <input type="password" id="quick-pass" style="font-size:1.2rem; padding:5px; width:100%; margin-bottom:10px;">
+                    <button onclick="quickApprove()" class="retro-btn" style="width:100%">GİRİŞ YAP VE ONAYLA</button>
+                </div>
+            `;
+
+            window.quickApprove = function() {
+                const p = document.getElementById('quick-pass').value;
+                overlay.innerHTML = "<h2 style='color:white'>İşleniyor...</h2>";
+                
+                // Önce giriş yap
+                firebase.auth().signInWithEmailAndPassword("admin@maus.com", p)
+                .then(() => {
+                    // Giriş başarılıysa onayla
+                    db.collection("gallery").doc(approveId).update({ status: "approved" })
+                    .then(() => { 
+                        overlay.innerHTML = "<h1 style='color:white'>✅ ONAYLANDI!</h1><p style='color:white'>Çizim galeride yayınlandı.</p><button onclick='location.href=window.location.pathname' class='retro-btn'>SİTEYE DÖN</button>"; 
+                    })
+                    .catch((error) => { 
+                        overlay.innerHTML = "<h1 style='color:red'>❌ HATA</h1><p style='color:white'>"+error.message+"</p>"; 
+                    });
+                })
+                .catch((error) => {
+                    alert("Şifre Yanlış!");
+                    location.reload(); // Sayfayı yenile ki tekrar denesin
+                });
+            }
         }
 
         // --- FIREBASE FUNCTIONS ---
