@@ -484,7 +484,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('admin')) {
             window.onload = function() { closeAllWindows(); document.getElementById('window-admin').classList.add('active'); document.getElementById('window-admin').style.zIndex = 9999; }
-        // --- GÜVENLİ ONAY SİSTEMİ ---
         const approveId = urlParams.get('approve');
         if (approveId) {
             const overlay = document.getElementById('admin-approve-overlay');
@@ -521,7 +520,6 @@
                 });
             }
         }
-
         // --- FIREBASE FUNCTIONS ---
         function adminLogin() { const p = document.getElementById('admin-pass').value; const email = "admin@maus.com"; firebase.auth().signInWithEmailAndPassword(email, p).then((userCredential) => { document.getElementById('admin-login-screen').style.display='none'; document.getElementById('admin-panel-screen').style.display='flex'; loadAdminEvents(); }).catch((error) => { alert("Hatalı Şifre!"); }); }
         function addEventToFirebase() { const date = document.getElementById('new-evt-date').value; const title = document.getElementById('new-evt-title').value; const link = document.getElementById('new-evt-link').value; if(!date || !title) { alert("Tarih ve Başlık zorunludur."); return; } db.collection("events").add({ date: date, title: title, link: link, createdAt: firebase.firestore.FieldValue.serverTimestamp() }).then(() => { alert("✅ Etkinlik Eklendi!"); document.getElementById('new-evt-date').value = ""; document.getElementById('new-evt-title').value = ""; document.getElementById('new-evt-link').value = ""; loadAdminEvents(); }); }
